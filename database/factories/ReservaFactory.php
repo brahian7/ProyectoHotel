@@ -1,0 +1,46 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Habitacion;
+use App\Models\Huesped;
+use App\Models\Reserva;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class ReservaFactory extends Factory
+{
+    protected $model = Reserva::class;
+
+    public function definition(): array
+    {
+        $ingreso = fake()->dateTimeBetween('+1 day', '+1 month');
+        $salida = (clone $ingreso)->modify('+' . fake()->numberBetween(1, 7) . ' days');
+
+        return [
+
+            'usuario_id' => User::inRandomOrder()->first()->id,
+
+            'huesped_id' => Huesped::inRandomOrder()->first()->id,
+
+            'habitacion_id' => Habitacion::inRandomOrder()->first()->id,
+
+            'fecha_reserva' => now(),
+
+            'fecha_ingreso' => $ingreso,
+
+            'fecha_salida' => $salida,
+
+            'cantidad_personas' => fake()->numberBetween(1, 4),
+
+            'estado' => fake()->randomElement([
+                'Pendiente',
+                'Confirmada',
+                'Cancelada',
+                'Finalizada'
+            ]),
+
+            'observaciones' => fake()->optional()->sentence(),
+        ];
+    }
+}
