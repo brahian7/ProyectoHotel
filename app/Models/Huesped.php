@@ -36,8 +36,8 @@ class Huesped extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function reservas()
+        public function reservas()
     {
-        return $this->hasMany(Reserva::class, 'huesped_id');
+        return $this->hasMany(Reserva::class);
     }
 }

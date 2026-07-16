@@ -7,30 +7,15 @@ use Illuminate\Http\Request;
 
 class HabitacionController extends Controller
 {
-   /**
- * Mostrar listado de habitaciones.
- */
-public function index(Request $request)
-{
-    $buscar = $request->buscar;
+    /**
+     * Mostrar listado de habitaciones.
+     */
+    public function index()
+    {
+        $habitaciones = Habitacion::orderBy('numero')->paginate(10);
 
-    $habitaciones = Habitacion::query()
-
-        ->when($buscar, function ($query) use ($buscar) {
-
-            $query->where('numero', 'like', "%{$buscar}%")
-                  ->orWhere('tipo', 'like', "%{$buscar}%");
-
-        })
-
-        ->orderBy('numero')
-
-        ->paginate(10)
-
-        ->withQueryString();
-
-    return view('habitaciones.index', compact('habitaciones', 'buscar'));
-}
+        return view('habitaciones.index', compact('habitaciones'));
+    }
 
     /**
      * Mostrar formulario para crear.
@@ -73,24 +58,30 @@ public function index(Request $request)
     /**
      * Mostrar una habitación.
      */
-    public function show(Habitacion $habitacion)
+            public function show($id)
     {
+        $habitacion = Habitacion::findOrFail($id);
+
         return view('habitaciones.show', compact('habitacion'));
     }
 
     /**
      * Mostrar formulario para editar.
      */
-    public function edit(Habitacion $habitacion)
-    {
-        return view('habitaciones.edit', compact('habitacion'));
-    }
+        public function edit($id)
+{
+    $habitacion = Habitacion::findOrFail($id);
+
+    return view('habitaciones.edit', compact('habitacion'));
+}
 
     /**
      * Actualizar habitación.
      */
-    public function update(Request $request, Habitacion $habitacion)
+        public function update(Request $request, $id)
     {
+        $habitacion = Habitacion::findOrFail($id);
+
         $datos = $request->validate([
 
             'numero' => 'required|max:10|unique:habitaciones,numero,' . $habitacion->id,
@@ -117,14 +108,26 @@ public function index(Request $request)
     }
 
     /**
-     * Eliminar habitación.
-     */
-    public function destroy(Habitacion $habitacion)
+ * Eliminar habitación.
+ */
+    public function destroy($id)
     {
-        $habitacion->delete();
+        try {
 
-        return redirect()
+            $habitacion = Habitacion::findOrFail($id);
+
+            $habitacion->delete();
+
+            return redirect()
                 ->route('habitaciones.index')
                 ->with('success', 'Habitación eliminada correctamente.');
+
+        } catch (\Exception $e) {
+
+            return redirect()
+                ->route('habitaciones.index')
+                ->with('error', 'No se pudo eliminar la habitación.');
+
+        }
     }
 }

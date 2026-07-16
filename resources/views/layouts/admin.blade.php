@@ -21,6 +21,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
           rel="stylesheet">
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- CSS + JS -->
     @vite(['resources/css/app.css','resources/js/app.js'])
 
@@ -79,7 +82,7 @@
     <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
-    {{-- SweetAlert2 Global --}}
+    {{-- Mensajes de éxito --}}
     @if(session('success'))
 
         <script>
@@ -92,7 +95,7 @@
 
                 text: "{{ session('success') }}",
 
-                confirmButtonColor: '#0d6efd'
+                confirmButtonColor: '#198754'
 
             });
 
@@ -100,6 +103,7 @@
 
     @endif
 
+    {{-- Mensajes de error --}}
     @if(session('error'))
 
         <script>

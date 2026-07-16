@@ -30,12 +30,23 @@ class Habitacion extends Model
 
     /*
     |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+
+    public function scopeDisponibles($query)
+    {
+        return $query->where('estado', 'Disponible');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | Relaciones
     |--------------------------------------------------------------------------
     */
 
     public function reservas()
     {
-        return $this->hasMany(Reserva::class, 'habitacion_id');
+        return $this->hasMany(Reserva::class);
     }
 }
