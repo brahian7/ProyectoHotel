@@ -11,12 +11,16 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->name('api.logout');
 
-    Route::apiResource('habitaciones', HabitacionController::class);
+    Route::apiResource('habitaciones', HabitacionController::class)
+        ->names('api.habitaciones');
 
-    Route::apiResource('huespedes', HuespedController::class);
+    Route::apiResource('huespedes', HuespedController::class)
+        ->names('api.huespedes');
 
-    Route::apiResource('reservas', ReservaController::class);
+    Route::apiResource('reservas', ReservaController::class)
+        ->names('api.reservas');
 
 });
