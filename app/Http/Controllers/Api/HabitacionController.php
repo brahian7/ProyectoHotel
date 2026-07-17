@@ -2,48 +2,137 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Models\Habitacion;
 use Illuminate\Http\Request;
 
-class HabitacionController extends Controller
+class HabitacionController extends ApiController
 {
     /**
-     * Display a listing of the resource.
+     * Listar habitaciones
      */
     public function index()
     {
-        //
+        $habitaciones = Habitacion::orderBy('numero')->get();
+
+        return $this->successResponse(
+            $habitaciones,
+            'Listado de habitaciones obtenido correctamente.'
+        );
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Registrar habitación
      */
     public function store(Request $request)
     {
-        //
+        $datos = $request->validate([
+
+            'numero' => 'required|unique:habitaciones,numero',
+
+            'tipo' => 'required',
+
+            'capacidad' => 'required|integer|min:1',
+
+            'precio_noche' => 'required|numeric|min:0',
+
+            'estado' => 'required',
+
+            'descripcion' => 'nullable|string'
+
+        ]);
+
+        $habitacion = Habitacion::create($datos);
+
+        return $this->successResponse(
+            $habitacion,
+            'Habitación registrada correctamente.',
+            201
+        );
     }
 
     /**
-     * Display the specified resource.
+     * Mostrar habitación
      */
     public function show(string $id)
     {
-        //
+        $habitacion = Habitacion::find($id);
+
+        if (!$habitacion) {
+
+            return $this->errorResponse(
+                'Habitación no encontrada.',
+                404
+            );
+
+        }
+
+        return $this->successResponse(
+            $habitacion,
+            'Habitación encontrada.'
+        );
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualizar habitación
      */
     public function update(Request $request, string $id)
     {
-        //
+        $habitacion = Habitacion::find($id);
+
+        if (!$habitacion) {
+
+            return $this->errorResponse(
+                'Habitación no encontrada.',
+                404
+            );
+
+        }
+
+        $datos = $request->validate([
+
+            'numero' => 'required|unique:habitaciones,numero,' . $habitacion->id,
+
+            'tipo' => 'required',
+
+            'capacidad' => 'required|integer|min:1',
+
+            'precio_noche' => 'required|numeric|min:0',
+
+            'estado' => 'required',
+
+            'descripcion' => 'nullable|string'
+
+        ]);
+
+        $habitacion->update($datos);
+
+        return $this->successResponse(
+            $habitacion,
+            'Habitación actualizada correctamente.'
+        );
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Eliminar habitación
      */
     public function destroy(string $id)
     {
-        //
+        $habitacion = Habitacion::find($id);
+
+        if (!$habitacion) {
+
+            return $this->errorResponse(
+                'Habitación no encontrada.',
+                404
+            );
+
+        }
+
+        $habitacion->delete();
+
+        return $this->successResponse(
+            null,
+            'Habitación eliminada correctamente.'
+        );
     }
 }
