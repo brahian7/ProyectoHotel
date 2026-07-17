@@ -27,42 +27,60 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
 
     /*
+    |--------------------------------------------------------------------------
     | Dashboard
+    |--------------------------------------------------------------------------
     */
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
     /*
-    | Habitaciones
+    |--------------------------------------------------------------------------
+    | Administrador y Recepcionista
+    |--------------------------------------------------------------------------
     */
 
-    Route::resource('habitaciones', HabitacionController::class);
+    Route::middleware('role:Administrador,Recepcionista')->group(function () {
+
+        /*
+        | Huéspedes
+        */
+
+        Route::resource('huespedes', HuespedController::class);
+
+        /*
+        | Reservas
+        */
+
+        Route::resource('reservas', ReservaController::class);
+
+        /*
+        | Perfil
+        */
+
+        Route::get('/profile', [ProfileController::class, 'edit'])
+            ->name('profile.edit');
+
+        Route::patch('/profile', [ProfileController::class, 'update'])
+            ->name('profile.update');
+
+        Route::delete('/profile', [ProfileController::class, 'destroy'])
+            ->name('profile.destroy');
+
+    });
 
     /*
-    | Huéspedes
+    |--------------------------------------------------------------------------
+    | Solo Administrador
+    |--------------------------------------------------------------------------
     */
 
-    Route::resource('huespedes', HuespedController::class);
+    Route::middleware('role:Administrador')->group(function () {
 
-    /*
-    | Reservas
-    */
+        Route::resource('habitaciones', HabitacionController::class);
 
-    Route::resource('reservas', ReservaController::class);
-
-    /*
-    | Perfil
-    */
-
-    Route::get('/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
-
-    Route::patch('/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
-
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
+    });
 
 });
 

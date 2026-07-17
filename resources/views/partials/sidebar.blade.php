@@ -2,16 +2,28 @@
 
     <div class="p-3">
 
-        <h5 class="text-center mb-4">
+        {{-- Encabezado --}}
+        <div class="text-center mb-4">
 
-            <i class="bi bi-list"></i>
+            <i class="bi bi-building-fill fs-1 text-warning"></i>
 
-            MENÚ
+            <h5 class="mt-2 mb-1">
 
-        </h5>
+                Hotel Central
 
-        <div class="list-group">
+            </h5>
 
+            <small class="text-light opacity-75">
+
+                {{ Auth::user()->rol }}
+
+            </small>
+
+        </div>
+
+        <div class="list-group shadow-sm">
+
+            {{-- Dashboard --}}
             <a href="{{ route('dashboard') }}"
                class="list-group-item list-group-item-action">
 
@@ -21,19 +33,25 @@
 
             </a>
 
-            <a href="{{ route('habitaciones.index') }}"
-               class="list-group-item list-group-item-action">
+            {{-- Solo Administrador --}}
+            @if(Auth::user()->rol == 'Administrador')
 
-                <i class="bi bi-door-open me-2"></i>
+                <a href="{{ route('habitaciones.index') }}"
+                   class="list-group-item list-group-item-action">
 
-                Habitaciones
+                    <i class="bi bi-door-open-fill me-2"></i>
 
-            </a>
+                    Habitaciones
 
+                </a>
+
+            @endif
+
+            {{-- Administrador y Recepcionista --}}
             <a href="{{ route('huespedes.index') }}"
                class="list-group-item list-group-item-action">
 
-                <i class="bi bi-people me-2"></i>
+                <i class="bi bi-people-fill me-2"></i>
 
                 Huéspedes
 
@@ -42,20 +60,37 @@
             <a href="{{ route('reservas.index') }}"
                class="list-group-item list-group-item-action">
 
-                <i class="bi bi-calendar-check me-2"></i>
+                <i class="bi bi-calendar-check-fill me-2"></i>
 
                 Reservas
 
             </a>
 
+            {{-- Perfil --}}
+            <a href="{{ route('profile.edit') }}"
+               class="list-group-item list-group-item-action">
+
+                <i class="bi bi-person-circle me-2"></i>
+
+                Mi Perfil
+
+            </a>
+
+            {{-- Futuro módulo de usuarios --}}
             @if(Auth::user()->rol == 'Administrador')
 
                 <a href="#"
-                   class="list-group-item list-group-item-action">
+                   class="list-group-item list-group-item-action disabled">
 
                     <i class="bi bi-person-gear me-2"></i>
 
                     Usuarios
+
+                    <span class="badge bg-secondary float-end">
+
+                        Próximamente
+
+                    </span>
 
                 </a>
 
