@@ -1,48 +1,111 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Update Password') }}
-        </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __('Ensure your account is using a long, random password to stay secure.') }}
+    <div class="mb-4">
+
+        <h3 class="fw-bold">
+
+            <i class="bi bi-shield-lock-fill text-success me-2"></i>
+
+            Seguridad
+
+        </h3>
+
+        <p class="text-muted mb-0">
+
+            Cambia tu contraseña para mantener tu cuenta protegida.
+
         </p>
-    </header>
 
-    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
+    </div>
+
+    <form method="POST"
+          action="{{ route('password.update') }}">
+
         @csrf
-        @method('put')
 
-        <div>
-            <x-input-label for="update_password_current_password" :value="__('Current Password')" />
-            <x-text-input id="update_password_current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
-            <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
+        @method('PUT')
+
+        <div class="row">
+
+            <div class="col-12 mb-3">
+
+                <label class="form-label fw-semibold">
+
+                    Contraseña actual
+
+                </label>
+
+                <input
+                    type="password"
+                    name="current_password"
+                    class="form-control"
+                    required>
+
+                @error('current_password','updatePassword')
+
+                    <div class="text-danger mt-1">
+
+                        {{ $message }}
+
+                    </div>
+
+                @enderror
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-semibold">
+
+                    Nueva contraseña
+
+                </label>
+
+                <input
+                    type="password"
+                    name="password"
+                    class="form-control"
+                    required>
+
+                @error('password','updatePassword')
+
+                    <div class="text-danger mt-1">
+
+                        {{ $message }}
+
+                    </div>
+
+                @enderror
+
+            </div>
+
+            <div class="col-md-6 mb-3">
+
+                <label class="form-label fw-semibold">
+
+                    Confirmar contraseña
+
+                </label>
+
+                <input
+                    type="password"
+                    name="password_confirmation"
+                    class="form-control"
+                    required>
+
+            </div>
+
         </div>
 
-        <div>
-            <x-input-label for="update_password_password" :value="__('New Password')" />
-            <x-text-input id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
-        </div>
+        <button
+            class="btn btn-success">
 
-        <div>
-            <x-input-label for="update_password_password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
-        </div>
+            <i class="bi bi-key-fill me-2"></i>
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            Actualizar contraseña
 
-            @if (session('status') === 'password-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
-            @endif
-        </div>
+        </button>
+
     </form>
+
 </section>
