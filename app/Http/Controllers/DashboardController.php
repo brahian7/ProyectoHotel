@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Habitacion;
 use App\Models\Huesped;
 use App\Models\Reserva;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -13,7 +14,19 @@ class DashboardController extends Controller
     {
         /*
         |--------------------------------------------------------------------------
-        | Estadísticas generales
+        | Dashboard del Cliente
+        |--------------------------------------------------------------------------
+        */
+
+        if (Auth::user()->rol === 'Cliente') {
+
+            return view('dashboard.cliente');
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Dashboard Administrativo
         |--------------------------------------------------------------------------
         */
 
@@ -79,7 +92,10 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $ultimasReservas = Reserva::with(['huesped', 'habitacion'])
+        $ultimasReservas = Reserva::with([
+                'huesped',
+                'habitacion'
+            ])
             ->latest()
             ->take(5)
             ->get();
