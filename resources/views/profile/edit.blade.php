@@ -1,29 +1,114 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
+@section('title','Mi Perfil')
+
+@section('content')
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-10">
+
+            <div class="card shadow border-0">
+
+                <div class="card-body p-5">
+
+                    <div class="row">
+
+                        {{-- Avatar --}}
+
+                        <div class="col-lg-4 text-center border-end">
+
+                            <div
+                                class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center mx-auto shadow"
+                                style="width:150px;height:150px;font-size:55px;font-weight:bold;">
+
+                                {{ strtoupper(substr($user->nombre,0,1)) }}
+                                {{ strtoupper(substr($user->apellido,0,1)) }}
+
+                            </div>
+
+                            <h3 class="mt-4">
+
+                                {{ $user->nombre }}
+
+                                {{ $user->apellido }}
+
+                            </h3>
+
+                            <span class="badge bg-primary fs-6">
+
+                                {{ $user->rol }}
+
+                            </span>
+
+                            <div class="mt-3">
+
+                                @if($user->estado)
+
+                                    <span class="badge bg-success">
+
+                                        Activo
+
+                                    </span>
+
+                                @else
+
+                                    <span class="badge bg-danger">
+
+                                        Inactivo
+
+                                    </span>
+
+                                @endif
+
+                            </div>
+
+                            <hr>
+
+                            <p class="text-muted">
+
+                                Miembro desde
+
+                                <br>
+
+                                <strong>
+
+                                    {{ $user->created_at->format('d/m/Y') }}
+
+                                </strong>
+
+                            </p>
+
+                        </div>
+
+                        {{-- Contenido --}}
+
+                        <div class="col-lg-8">
+
+                            @include('profile.partials.update-profile-information-form')
+
+                            <hr class="my-5">
+
+                            @include('profile.partials.update-password-form')
+
+                            <hr class="my-5">
+
+                            @include('profile.partials.delete-user-form')
+
+                        </div>
+
+                    </div>
+
                 </div>
+
             </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
-
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
-            </div>
         </div>
+
     </div>
-</x-app-layout>
+
+</div>
+
+@endsection
