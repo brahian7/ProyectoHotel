@@ -11,7 +11,11 @@
     <meta name="csrf-token"
           content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Hotel Central La Italia')</title>
+    <title>
+
+        @yield('title') | Hotel Central La Italia
+
+    </title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
@@ -21,14 +25,27 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
           rel="stylesheet">
 
-    <!-- CSS + JS -->
-    @vite(['resources/css/app.css','resources/js/app.js'])
+    <!-- Favicon temporal -->
+    <link rel="icon"
+          href="data:image/svg+xml,
+          %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E
+          %3Ctext y='14' font-size='14'%3E🏨%3C/text%3E
+          %3C/svg%3E">
+
+    <!-- CSS y JS del proyecto -->
+    @vite([
+        'resources/css/app.css',
+        'resources/js/app.js'
+    ])
 
 </head>
 
 <body class="bg-light">
 
+    {{-- ========================= --}}
     {{-- Navbar --}}
+    {{-- ========================= --}}
+
     @include('partials.navbar')
 
     <div class="container-fluid">
@@ -43,7 +60,7 @@
 
                 @if($errors->any())
 
-                    <div class="alert alert-danger">
+                    <div class="alert alert-danger shadow-sm">
 
                         <strong>
 
@@ -76,23 +93,29 @@
     {{-- Footer --}}
     @include('partials.footer')
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <!-- Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
-    {{-- SweetAlert2 Global --}}
+    {{-- ========================= --}}
+    {{-- SweetAlert Mensajes --}}
+    {{-- ========================= --}}
+
     @if(session('success'))
 
         <script>
 
             Swal.fire({
 
-                icon: 'success',
+                icon:'success',
 
-                title: '¡Excelente!',
+                title:'¡Excelente!',
 
-                text: "{{ session('success') }}",
+                text:"{{ session('success') }}",
 
-                confirmButtonColor: '#0d6efd'
+                confirmButtonColor:'#0d6efd'
 
             });
 
@@ -106,13 +129,13 @@
 
             Swal.fire({
 
-                icon: 'error',
+                icon:'error',
 
-                title: 'Ha ocurrido un problema',
+                title:'Ha ocurrido un problema',
 
-                text: "{{ session('error') }}",
+                text:"{{ session('error') }}",
 
-                confirmButtonColor: '#dc3545'
+                confirmButtonColor:'#dc3545'
 
             });
 
@@ -120,34 +143,37 @@
 
     @endif
 
+    {{-- ========================= --}}
     {{-- Confirmación para eliminar --}}
+    {{-- ========================= --}}
+
     <script>
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded',function(){
 
             document.querySelectorAll('.formulario-eliminar').forEach(function(formulario){
 
-                formulario.addEventListener('submit', function(e){
+                formulario.addEventListener('submit',function(e){
 
                     e.preventDefault();
 
                     Swal.fire({
 
-                        title: '¿Está seguro?',
+                        title:'¿Está seguro?',
 
-                        text: 'Esta acción no podrá deshacerse.',
+                        text:'Esta acción no podrá deshacerse.',
 
-                        icon: 'warning',
+                        icon:'warning',
 
-                        showCancelButton: true,
+                        showCancelButton:true,
 
-                        confirmButtonColor: '#dc3545',
+                        confirmButtonColor:'#dc3545',
 
-                        cancelButtonColor: '#6c757d',
+                        cancelButtonColor:'#6c757d',
 
-                        confirmButtonText: 'Sí, eliminar',
+                        confirmButtonText:'Sí, eliminar',
 
-                        cancelButtonText: 'Cancelar'
+                        cancelButtonText:'Cancelar'
 
                     }).then((result)=>{
 
@@ -167,11 +193,9 @@
 
     </script>
 
-     {{-- Scripts de cada vista --}}
+    {{-- Scripts propios de cada vista --}}
     @stack('scripts')
-
 
 </body>
 
 </html>
-

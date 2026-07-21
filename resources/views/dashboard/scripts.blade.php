@@ -2,39 +2,51 @@
 
 <script>
 
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded', () => {
 
-    document.querySelectorAll('.contador').forEach(c=>{
+    /*
+    |--------------------------------------------------------------------------
+    | Animación de contadores
+    |--------------------------------------------------------------------------
+    */
 
-        let n=0;
+    document.querySelectorAll('.contador').forEach(contador => {
 
-        const t=parseInt(c.dataset.target)||0;
+        let numero = 0;
 
-        const i=Math.max(1,Math.ceil(t/60));
+        const objetivo = parseInt(contador.dataset.target) || 0;
 
-        const x=setInterval(()=>{
+        const incremento = Math.max(1, Math.ceil(objetivo / 60));
 
-            n+=i;
+        const intervalo = setInterval(() => {
 
-            if(n>=t){
+            numero += incremento;
 
-                n=t;
+            if(numero >= objetivo){
 
-                clearInterval(x);
+                numero = objetivo;
+
+                clearInterval(intervalo);
 
             }
 
-            c.innerText=n.toLocaleString();
+            contador.innerText = numero.toLocaleString();
 
         },20);
 
     });
 
-    const canvas=document.getElementById('habitacionesChart');
+    /*
+    |--------------------------------------------------------------------------
+    | Gráfico Estado Habitaciones
+    |--------------------------------------------------------------------------
+    */
 
-    if(canvas){
+    const habitaciones = document.getElementById('habitacionesChart');
 
-        new Chart(canvas,{
+    if(habitaciones){
+
+        new Chart(habitaciones,{
 
             type:'doughnut',
 
@@ -61,7 +73,11 @@ document.addEventListener('DOMContentLoaded',()=>{
                         '#dc3545',
                         '#ffc107',
                         '#6c757d'
-                    ]
+                    ],
+
+                    borderWidth:0,
+
+                    hoverOffset:15
 
                 }]
 
@@ -71,13 +87,119 @@ document.addEventListener('DOMContentLoaded',()=>{
 
                 responsive:true,
 
-                maintainAspectRatio:false,
+                plugins:{
+
+                    legend:{
+                        position:'bottom'
+                    }
+
+                },
+
+                cutout:'70%'
+
+            }
+
+        });
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Gráfico Ingresos
+    |--------------------------------------------------------------------------
+    */
+
+    const ingresos = document.getElementById('ingresosChart');
+
+    if(ingresos){
+
+        new Chart(ingresos,{
+
+            type:'line',
+
+            data:{
+
+                labels:[
+
+                    'Ene',
+                    'Feb',
+                    'Mar',
+                    'Abr',
+                    'May',
+                    'Jun',
+                    'Jul',
+                    'Ago',
+                    'Sep',
+                    'Oct',
+                    'Nov',
+                    'Dic'
+
+                ],
+
+                datasets:[{
+
+                    label:'Ingresos',
+
+                    data:[
+
+                        1200000,
+                        1800000,
+                        1500000,
+                        2400000,
+                        2100000,
+                        3200000,
+                        2800000,
+                        3500000,
+                        3100000,
+                        2700000,
+                        3900000,
+                        {{ $ingresosMes }}
+
+                    ],
+
+                    borderColor:'#198754',
+
+                    backgroundColor:'rgba(25,135,84,.15)',
+
+                    fill:true,
+
+                    tension:.35,
+
+                    pointRadius:5,
+
+                    pointHoverRadius:8
+
+                }]
+
+            },
+
+            options:{
+
+                responsive:true,
 
                 plugins:{
 
                     legend:{
+                        display:false
+                    }
 
-                        position:'bottom'
+                },
+
+                scales:{
+
+                    y:{
+
+                        beginAtZero:true,
+
+                        ticks:{
+
+                            callback:function(value){
+
+                                return '$'+value.toLocaleString();
+
+                            }
+
+                        }
 
                     }
 

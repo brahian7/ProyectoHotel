@@ -1,30 +1,30 @@
 @php
 
-    use Carbon\Carbon;
+use Carbon\Carbon;
 
-    Carbon::setLocale('es');
+Carbon::setLocale('es');
 
-    $hora = now()->hour;
+$hora = now()->hour;
 
-    if ($hora >= 5 && $hora < 12) {
+if ($hora >= 5 && $hora < 12) {
 
-        $saludo = '☀ Buenos días';
+    $saludo = '☀ Buenos días';
 
-    } elseif ($hora >= 12 && $hora < 18) {
+} elseif ($hora >= 12 && $hora < 18) {
 
-        $saludo = '🌤 Buenas tardes';
+    $saludo = '🌤 Buenas tardes';
 
-    } else {
+} else {
 
-        $saludo = '🌙 Buenas noches';
+    $saludo = '🌙 Buenas noches';
 
-    }
+}
 
 @endphp
 
 <div class="card border-0 shadow-lg overflow-hidden mb-5"
      data-aos="fade-down"
-     style="background: linear-gradient(135deg,#0d6efd,#4f8dfd); border-radius:22px;">
+     style="background:linear-gradient(135deg,#1d4ed8,#2563eb);border-radius:24px;">
 
     <div class="card-body p-5">
 
@@ -32,71 +32,147 @@
 
             <div class="col-lg-8">
 
+                <span class="badge bg-light text-primary fs-6 px-3 py-2 mb-3">
+
+                    Sistema de Gestión Hotelera
+
+                </span>
+
                 <h2 class="fw-bold text-white mb-3">
 
                     {{ $saludo }}, {{ Auth::user()->nombre }}
 
                 </h2>
 
-                <h5 class="text-white opacity-75 mb-4">
+                <p class="text-white opacity-75 fs-5 mb-4">
 
-                    Bienvenido nuevamente al Sistema de Gestión Hotelera
+                    Bienvenido nuevamente.
 
-                </h5>
-
-                <h3 class="fw-bold text-white">
-
-                    Hotel Central La Italia
-
-                </h3>
-
-                <p class="text-white opacity-75 mb-0">
-
-                    Cartago, Valle del Cauca
+                    Aquí tienes el resumen de la operación del hotel para hoy.
 
                 </p>
+
+                <div class="row text-white mt-4">
+
+                    <div class="col-md-6 mb-3">
+
+                        <i class="bi bi-building-fill me-2"></i>
+
+                        <strong>Hotel Central La Italia</strong>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <i class="bi bi-geo-alt-fill me-2"></i>
+
+                        Cartago, Valle del Cauca
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <i class="bi bi-calendar-event-fill me-2"></i>
+
+                        {{ ucfirst(now()->translatedFormat('l, d \d\e F \d\e Y')) }}
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <i class="bi bi-clock-fill me-2"></i>
+
+                        {{ now()->format('h:i A') }}
+
+                    </div>
+
+                </div>
 
             </div>
 
             <div class="col-lg-4">
 
-                <div class="bg-white rounded-4 shadow p-4">
+                <div class="bg-white rounded-4 shadow-lg p-4">
 
-                    <h5 class="fw-bold text-primary mb-3">
+                    <h4 class="fw-bold text-primary mb-4">
 
-                        <i class="bi bi-building-fill me-2"></i>
+                        <i class="bi bi-bar-chart-fill me-2"></i>
 
-                        HOTEL
+                        Resumen del día
 
-                    </h5>
+                    </h4>
 
-                    <hr>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
 
-                    <p class="mb-2">
+                        <span>
 
-                        <strong>Usuario:</strong><br>
+                            <i class="bi bi-calendar-check text-success me-2"></i>
 
-                        {{ Auth::user()->nombre }}
-
-                    </p>
-
-                    <p class="mb-2">
-
-                        <strong>Fecha:</strong><br>
-
-                        {{ ucfirst(now()->translatedFormat('l, d \d\e F \d\e Y')) }}
-
-                    </p>
-
-                    <p class="mb-0">
-
-                        <span class="badge bg-success">
-
-                            Sistema Operativo
+                            Reservas hoy
 
                         </span>
 
-                    </p>
+                        <span class="badge bg-success fs-6">
+
+                            {{ $reservasMes }}
+
+                        </span>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <span>
+
+                            <i class="bi bi-door-open text-warning me-2"></i>
+
+                            Check-in
+
+                        </span>
+
+                        <span class="badge bg-warning text-dark">
+
+                            Próximamente
+
+                        </span>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <span>
+
+                            <i class="bi bi-door-closed text-info me-2"></i>
+
+                            Check-out
+
+                        </span>
+
+                        <span class="badge bg-info">
+
+                            Próximamente
+
+                        </span>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <span>
+
+                            <i class="bi bi-cpu-fill text-primary me-2"></i>
+
+                            Estado
+
+                        </span>
+
+                        <span class="badge bg-success">
+
+                            Operativo
+
+                        </span>
+
+                    </div>
 
                 </div>
 

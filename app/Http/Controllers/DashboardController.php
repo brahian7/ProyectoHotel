@@ -26,7 +26,7 @@ class DashboardController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Dashboard Administrativo
+        | Estadísticas Generales
         |--------------------------------------------------------------------------
         */
 
@@ -40,7 +40,7 @@ class DashboardController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Estado de habitaciones
+        | Estado de Habitaciones
         |--------------------------------------------------------------------------
         */
 
@@ -54,11 +54,47 @@ class DashboardController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | Estado de Reservas
+        |--------------------------------------------------------------------------
+        */
+
+        $reservasPendientes = Reserva::where('estado', 'Pendiente')->count();
+
+        $reservasActivas = Reserva::where('estado', 'Activa')->count();
+
+        $reservasFinalizadas = Reserva::where('estado', 'Finalizada')->count();
+
+        $reservasCanceladas = Reserva::where('estado', 'Cancelada')->count();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Huéspedes Hospedados
+        |--------------------------------------------------------------------------
+        */
+
+        $huespedesHospedados = Reserva::where('estado', 'Activa')->count();
+
+        /*
+        |--------------------------------------------------------------------------
         | Ingresos
         |--------------------------------------------------------------------------
         */
 
+        // Histórico
         $ingresos = Reserva::sum('total');
+
+        // Hoy
+        $ingresosHoy = Reserva::whereDate('fecha_reserva', today())
+            ->sum('total');
+
+        // Mes
+        $ingresosMes = Reserva::whereMonth('fecha_reserva', now()->month)
+            ->whereYear('fecha_reserva', now()->year)
+            ->sum('total');
+
+        // Año
+        $ingresosAnio = Reserva::whereYear('fecha_reserva', now()->year)
+            ->sum('total');
 
         /*
         |--------------------------------------------------------------------------
@@ -68,7 +104,11 @@ class DashboardController extends Controller
 
         if ($habitaciones > 0) {
 
-            $ocupacion = round((($ocupadas + $reservadas) / $habitaciones) * 100);
+            $ocupacion = round(
+
+                (($ocupadas + $reservadas) / $habitaciones) * 100
+
+            );
 
         } else {
 
@@ -78,17 +118,32 @@ class DashboardController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Reservas del mes
+        | Actividad del Día
         |--------------------------------------------------------------------------
         */
 
-        $reservasMes = Reserva::whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
+        $reservasHoy = Reserva::whereDate('fecha_reserva', today())
+            ->count();
+
+        $checkInHoy = Reserva::whereDate('fecha_ingreso', today())
+            ->count();
+
+        $checkOutHoy = Reserva::whereDate('fecha_salida', today())
             ->count();
 
         /*
         |--------------------------------------------------------------------------
-        | Últimas reservas
+        | Reservas del Mes
+        |--------------------------------------------------------------------------
+        */
+
+        $reservasMes = Reserva::whereMonth('fecha_reserva', now()->month)
+            ->whereYear('fecha_reserva', now()->year)
+            ->count();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Últimas Reservas
         |--------------------------------------------------------------------------
         */
 
@@ -100,19 +155,60 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        /*
+        |--------------------------------------------------------------------------
+        | Vista
+        |--------------------------------------------------------------------------
+        */
+
         return view('dashboard.index', compact(
+
             'usuarios',
+
             'habitaciones',
+
             'huespedes',
+
             'reservas',
+
             'disponibles',
+
             'ocupadas',
+
             'reservadas',
+
             'mantenimiento',
+
+            'reservasPendientes',
+
+            'reservasActivas',
+
+            'reservasFinalizadas',
+
+            'reservasCanceladas',
+
+            'huespedesHospedados',
+
             'ingresos',
+
+            'ingresosHoy',
+
+            'ingresosMes',
+
+            'ingresosAnio',
+
             'ocupacion',
+
             'reservasMes',
+
+            'reservasHoy',
+
+            'checkInHoy',
+
+            'checkOutHoy',
+
             'ultimasReservas'
+
         ));
     }
 }
