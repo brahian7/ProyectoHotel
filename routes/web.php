@@ -61,6 +61,13 @@ Route::middleware(['auth'])->group(function () {
         |--------------------------------------------------------------------------
         */
 
+        // Exportar listado de reservas a PDF
+        Route::get(
+            'reservas/exportar/pdf',
+            [ReservaController::class, 'exportarPDF']
+        )->name('reservas.exportar.pdf');
+
+        // CRUD de reservas
         Route::resource('reservas', ReservaController::class);
 
         /*
@@ -136,7 +143,7 @@ Route::middleware(['auth', 'role:Cliente'])
             ->name('reservar.confirmar');
 
         Route::post('/guardar-reserva', [ReservaClienteController::class, 'guardar'])
-         ->name('reservar.guardar');
+            ->name('reservar.guardar');
 
         /*
         |--------------------------------------------------------------------------

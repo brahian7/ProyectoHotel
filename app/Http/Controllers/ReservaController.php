@@ -8,42 +8,166 @@ use App\Models\Huesped;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReservaController extends Controller
-{
-    /**
-     * Mostrar listado de reservas.
-     */
-    public function index(Request $request)
-{
-    $buscar = $request->buscar;
+    {
 
-    $reservas = Reserva::with(['huesped', 'habitacion'])
+            public function exportarPDF(Request $request)
+        {
+            $buscar = $request->buscar;
+            $estado = $request->estado;
+            $desde = $request->desde;
+            $hasta = $request->hasta;
 
-        ->when($buscar, function ($query) use ($buscar) {
+            $reservas = Reserva::with([
+                'huesped',
+                'habitacion',
+                'usuario'
+            ])
 
-            $query->whereHas('huesped', function ($q) use ($buscar) {
+            ->when($buscar, function ($query) use ($buscar) {
 
-                $q->where('nombres', 'like', "%{$buscar}%")
-                  ->orWhere('apellidos', 'like', "%{$buscar}%")
-                  ->orWhere('numero_documento', 'like', "%{$buscar}%");
+                $query->where(function ($q) use ($buscar) {
+
+                    $q->whereHas('huesped', function ($sub) use ($buscar) {
+
+                        $sub->where('nombres', 'like', "%{$buscar}%")
+                            ->orWhere('apellidos', 'like', "%{$buscar}%")
+                            ->orWhere('numero_documento', 'like', "%{$buscar}%");
+
+                    })
+
+                    ->orWhereHas('habitacion', function ($sub) use ($buscar) {
+
+                        $sub->where('numero', 'like', "%{$buscar}%");
+
+                    });
+
+                });
 
             })
 
-            ->orWhereHas('habitacion', function ($q) use ($buscar) {
+            ->when($estado, function ($query) use ($estado) {
 
-                $q->where('numero', 'like', "%{$buscar}%");
+                $query->where('estado', $estado);
 
-            });
+            })
 
-        })
+            ->when($desde, function ($query) use ($desde) {
 
-        ->orderByDesc('fecha_reserva')
+                $query->whereDate('fecha_ingreso', '>=', $desde);
 
-        ->paginate(10);
+            })
 
-    return view('reservas.index', compact('reservas', 'buscar'));
-}
+            ->when($hasta, function ($query) use ($hasta) {
+
+                $query->whereDate('fecha_salida', '<=', $hasta);
+
+            })
+
+            ->orderByDesc('fecha_reserva')
+
+            ->get();
+
+            $totalIngresos = $reservas->sum('total');
+
+            $pdf = Pdf::loadView(
+                'reservas.pdf',
+                compact(
+                    'reservas',
+                    'totalIngresos'
+                )
+            );
+
+            $pdf->setPaper('a4', 'landscape');
+
+            return $pdf->download(
+                'Listado_Reservas_' . now()->format('Ymd_His') . '.pdf'
+            );
+        }
+
+    /**
+     * Mostrar listado de reservas.
+     */
+            public function index(Request $request)
+        {
+            $buscar = $request->buscar;
+            $estado = $request->estado;
+            $habitacion = $request->habitacion;
+            $fechaIngreso = $request->fecha_ingreso;
+            $fechaSalida = $request->fecha_salida;
+
+            $reservas = Reserva::with(['huesped','habitacion'])
+
+                ->when($buscar, function ($query) use ($buscar) {
+
+                    $query->where(function($q) use ($buscar){
+
+                        $q->whereHas('huesped', function ($sub) use ($buscar){
+
+                            $sub->where('nombre','like',"%{$buscar}%")
+                                ->orWhere('apellido','like',"%{$buscar}%")
+                                ->orWhere('numero_documento','like',"%{$buscar}%");
+
+                        })
+
+                        ->orWhereHas('habitacion', function ($sub) use ($buscar){
+
+                            $sub->where('numero','like',"%{$buscar}%");
+
+                        })
+
+                        ->orWhere('codigo_reserva','like',"%{$buscar}%");
+
+                    });
+
+                })
+
+                ->when($estado, function($query) use ($estado){
+
+                    $query->where('estado',$estado);
+
+                })
+
+                ->when($habitacion, function($query) use ($habitacion){
+
+                    $query->where('habitacion_id',$habitacion);
+
+                })
+
+                ->when($fechaIngreso, function($query) use ($fechaIngreso){
+
+                    $query->whereDate('fecha_ingreso',$fechaIngreso);
+
+                })
+
+                ->when($fechaSalida, function($query) use ($fechaSalida){
+
+                    $query->whereDate('fecha_salida',$fechaSalida);
+
+                })
+
+                ->latest()
+
+                ->paginate(10)
+
+                ->withQueryString();
+
+            $habitaciones = Habitacion::orderBy('numero')->get();
+
+            return view('reservas.index', compact(
+
+                'reservas',
+                'buscar',
+                'estado',
+                'habitacion',
+                'fechaIngreso',
+                'fechaSalida',
+                'habitaciones'
+
+            ));
+        }
 
     /**
      * Mostrar formulario para crear.

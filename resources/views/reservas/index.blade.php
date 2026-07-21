@@ -6,65 +6,161 @@
 
 <div class="container-fluid mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
 
         <div>
 
-            <h2 class="fw-bold">
-
-                <i class="bi bi-calendar-check-fill text-primary"></i>
-
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-calendar-check-fill text-primary me-2"></i>
                 Gestión de Reservas
-
             </h2>
 
             <p class="text-muted mb-0">
-
-                Administre las reservas del hotel.
-
+                Administre, consulte y controle todas las reservas del hotel.
             </p>
 
         </div>
 
-        <a href="{{ route('reservas.create') }}"
-           class="btn btn-primary">
+        <div class="d-flex gap-2">
 
-            <i class="bi bi-plus-circle-fill"></i>
+            <a href="{{ route('reservas.exportar.pdf', request()->query()) }}"
+               class="btn btn-danger">
 
-            Nueva Reserva
+                <i class="bi bi-file-earmark-pdf-fill me-2"></i>
 
-        </a>
+                Exportar PDF
+
+            </a>
+
+            <a href="{{ route('reservas.create') }}"
+               class="btn btn-primary">
+
+                <i class="bi bi-plus-circle-fill me-2"></i>
+
+                Nueva Reserva
+
+            </a>
+
+        </div>
 
     </div>
 
-    <div class="card shadow border-0">
 
-        <div class="card-header bg-white">
+    <div class="card border-0 shadow-lg">
+
+        <div class="card-header bg-white py-4">
 
             <form method="GET">
 
-                <div class="row">
+                <div class="row g-3 align-items-end">
 
-                    <div class="col-md-6">
+                    <div class="col-lg-4">
+
+                        <label class="form-label fw-semibold">
+
+                            Buscar
+
+                        </label>
 
                         <input
                             type="text"
                             name="buscar"
                             class="form-control"
-                            placeholder="Buscar huésped o habitación..."
-                            value="{{ $buscar }}">
+                            placeholder="Nombre, documento o habitación..."
+                            value="{{ request('buscar') }}">
 
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-lg-2">
 
-                        <button class="btn btn-primary w-100">
+                        <label class="form-label fw-semibold">
 
-                            <i class="bi bi-search"></i>
+                            Estado
 
-                            Buscar
+                        </label>
 
-                        </button>
+                        <select
+                            name="estado"
+                            class="form-select">
+
+                            <option value="">Todos</option>
+
+                            <option value="Pendiente"
+                                {{ request('estado')=='Pendiente' ? 'selected' : '' }}>
+                                Pendiente
+                            </option>
+
+                            <option value="Confirmada"
+                                {{ request('estado')=='Confirmada' ? 'selected' : '' }}>
+                                Confirmada
+                            </option>
+
+                            <option value="Finalizada"
+                                {{ request('estado')=='Finalizada' ? 'selected' : '' }}>
+                                Finalizada
+                            </option>
+
+                            <option value="Cancelada"
+                                {{ request('estado')=='Cancelada' ? 'selected' : '' }}>
+                                Cancelada
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <label class="form-label fw-semibold">
+
+                            Desde
+
+                        </label>
+
+                        <input
+                            type="date"
+                            name="desde"
+                            class="form-control"
+                            value="{{ request('desde') }}">
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <label class="form-label fw-semibold">
+
+                            Hasta
+
+                        </label>
+
+                        <input
+                            type="date"
+                            name="hasta"
+                            class="form-control"
+                            value="{{ request('hasta') }}">
+
+                    </div>
+
+                    <div class="col-lg-2">
+
+                        <div class="d-grid gap-2">
+
+                            <button class="btn btn-primary">
+
+                                <i class="bi bi-search me-1"></i>
+
+                                Buscar
+
+                            </button>
+
+                            <a href="{{ route('reservas.index') }}"
+                               class="btn btn-outline-secondary">
+
+                                Limpiar
+
+                            </a>
+
+                        </div>
 
                     </div>
 
@@ -74,6 +170,7 @@
 
         </div>
 
+
         <div class="table-responsive">
 
             <table class="table table-hover align-middle mb-0">
@@ -82,7 +179,7 @@
 
                     <tr>
 
-                        <th>#</th>
+                        <th class="ps-4">Código</th>
 
                         <th>Huésped</th>
 
@@ -98,7 +195,7 @@
 
                         <th>Estado</th>
 
-                        <th width="180">Acciones</th>
+                        <th class="text-center">Acciones</th>
 
                     </tr>
 
@@ -108,53 +205,89 @@
 
                 @forelse($reservas as $reserva)
 
+                    @php
+
+                        $color='secondary';
+
+                        $icon='question-circle';
+
+                        if($reserva->estado=='Pendiente'){
+                            $color='warning';
+                            $icon='clock-history';
+                        }
+
+                        if($reserva->estado=='Confirmada'){
+                            $color='success';
+                            $icon='check-circle-fill';
+                        }
+
+                        if($reserva->estado=='Finalizada'){
+                            $color='primary';
+                            $icon='flag-fill';
+                        }
+
+                        if($reserva->estado=='Cancelada'){
+                            $color='danger';
+                            $icon='x-circle-fill';
+                        }
+
+                    @endphp
+
                     <tr>
 
-                        <td>
+                        <td class="ps-4 fw-bold">
 
-                            {{ $reserva->id }}
-
-                        </td>
-
-                        <td>
-
-                            <strong>
-
-                                {{ $reserva->huesped->nombres }}
-
-                                {{ $reserva->huesped->apellidos }}
-
-                            </strong>
-
-                            <br>
-
-                            <small class="text-muted">
-
-                                {{ $reserva->huesped->numero_documento }}
-
-                            </small>
+                            {{ $reserva->codigo_reserva }}
 
                         </td>
 
                         <td>
 
-                            <strong>
+                            <div class="d-flex align-items-center">
 
-                                Hab. {{ $reserva->habitacion->numero }}
+                                <div class="rounded-circle bg-primary text-white fw-bold d-flex justify-content-center align-items-center me-3"
+                                     style="width:45px;height:45px;">
 
-                            </strong>
+                                    {{ strtoupper(substr($reserva->huesped->nombres,0,1)) }}
 
-                            <br>
+                                </div>
 
-                            <small class="text-muted">
+                                <div>
 
-                                {{ $reserva->habitacion->tipo }}
+                                    <div class="fw-semibold">
 
-                            </small>
+                                        {{ $reserva->huesped->nombres }}
+                                        {{ $reserva->huesped->apellidos }}
+
+                                    </div>
+
+                                    <small class="text-muted">
+
+                                        {{ $reserva->huesped->numero_documento }}
+
+                                    </small>
+
+                                </div>
+
+                            </div>
 
                         </td>
 
                         <td>
+
+                            <span class="badge bg-light text-dark border px-3 py-2">
+
+                                <i class="bi bi-door-open me-1"></i>
+
+                                Habitación {{ $reserva->habitacion->numero }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <i class="bi bi-box-arrow-in-right text-success me-1"></i>
 
                             {{ $reserva->fecha_ingreso->format('d/m/Y') }}
 
@@ -162,13 +295,15 @@
 
                         <td>
 
+                            <i class="bi bi-box-arrow-right text-danger me-1"></i>
+
                             {{ $reserva->fecha_salida->format('d/m/Y') }}
 
                         </td>
 
                         <td>
 
-                            {{ $reserva->fecha_ingreso->diffInDays($reserva->fecha_salida) }}
+                            {{ $reserva->cantidad_noches }}
 
                         </td>
 
@@ -176,96 +311,56 @@
 
                             $
 
-                            {{ number_format(
-                                $reserva->habitacion->precio_noche *
-                                $reserva->fecha_ingreso->diffInDays($reserva->fecha_salida),
-                                0,
-                                ',',
-                                '.'
-                            ) }}
-
-                        </td>
-
-                        <td>
-                                                @switch($reserva->estado)
-
-                            @case('Pendiente')
-
-                                <span class="badge bg-warning text-dark">
-
-                                    Pendiente
-
-                                </span>
-
-                            @break
-
-                            @case('Confirmada')
-
-                                <span class="badge bg-success">
-
-                                    Confirmada
-
-                                </span>
-
-                            @break
-
-                            @case('Cancelada')
-
-                                <span class="badge bg-danger">
-
-                                    Cancelada
-
-                                </span>
-
-                            @break
-
-                            @case('Finalizada')
-
-                                <span class="badge bg-secondary">
-
-                                    Finalizada
-
-                                </span>
-
-                            @break
-
-                        @endswitch
+                            {{ number_format($reserva->total,0,',','.') }}
 
                         </td>
 
                         <td>
 
-                            <div class="d-flex gap-1">
+                            <span class="badge bg-{{ $color }} px-3 py-2">
 
-                                <a href="{{ route('reservas.show',$reserva) }}"
-                                   class="btn btn-sm btn-info text-white"
-                                   title="Ver">
+                                <i class="bi bi-{{ $icon }} me-1"></i>
+
+                                {{ $reserva->estado }}
+
+                            </span>
+
+                        </td>
+
+                        <td class="text-center">
+
+                            <div class="btn-group">
+
+                                                            <a href="{{ route('reservas.show', $reserva) }}"
+                                   class="btn btn-sm btn-outline-primary"
+                                   data-bs-toggle="tooltip"
+                                   title="Ver reserva">
 
                                     <i class="bi bi-eye-fill"></i>
 
                                 </a>
 
-                                <a href="{{ route('reservas.edit',$reserva) }}"
-                                   class="btn btn-sm btn-warning"
-                                   title="Editar">
+                                <a href="{{ route('reservas.edit', $reserva) }}"
+                                   class="btn btn-sm btn-outline-warning"
+                                   data-bs-toggle="tooltip"
+                                   title="Editar reserva">
 
                                     <i class="bi bi-pencil-fill"></i>
 
                                 </a>
 
-                                <form
-                                    action="{{ route('reservas.destroy',$reserva) }}"
-                                    method="POST"
-                                    class="formulario-eliminar">
+                                <form action="{{ route('reservas.destroy', $reserva) }}"
+                                      method="POST"
+                                      class="formulario-eliminar d-inline">
 
                                     @csrf
 
                                     @method('DELETE')
 
                                     <button
-                                        type="submit"
-                                        class="btn btn-sm btn-danger"
-                                        title="Eliminar">
+                                        class="btn btn-sm btn-outline-danger"
+                                        data-bs-toggle="tooltip"
+                                        title="Eliminar reserva">
 
                                         <i class="bi bi-trash-fill"></i>
 
@@ -285,15 +380,28 @@
 
                         <td colspan="9" class="text-center py-5">
 
-                            <i class="bi bi-calendar-x display-4 text-muted"></i>
+                            <i class="bi bi-calendar-x display-3 text-secondary"></i>
 
-                            <br><br>
+                            <h4 class="mt-4">
 
-                            <h5 class="text-muted">
+                                No existen reservas registradas
 
-                                No hay reservas registradas.
+                            </h4>
 
-                            </h5>
+                            <p class="text-muted mb-4">
+
+                                Intenta modificar los filtros de búsqueda o registra una nueva reserva.
+
+                            </p>
+
+                            <a href="{{ route('reservas.create') }}"
+                               class="btn btn-primary">
+
+                                <i class="bi bi-plus-circle-fill me-2"></i>
+
+                                Crear primera reserva
+
+                            </a>
 
                         </td>
 
@@ -309,9 +417,31 @@
 
         @if($reservas->hasPages())
 
-            <div class="card-footer bg-white">
+            <div class="card-footer bg-white d-flex justify-content-between align-items-center flex-wrap">
 
-                {{ $reservas->links() }}
+                <div class="text-muted">
+
+                    Mostrando
+
+                    <strong>{{ $reservas->firstItem() }}</strong>
+
+                    -
+
+                    <strong>{{ $reservas->lastItem() }}</strong>
+
+                    de
+
+                    <strong>{{ $reservas->total() }}</strong>
+
+                    reservas
+
+                </div>
+
+                <div>
+
+                    {{ $reservas->appends(request()->query())->links() }}
+
+                </div>
 
             </div>
 
@@ -320,5 +450,25 @@
     </div>
 
 </div>
+
+@push('scripts')
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+
+    });
+
+});
+
+</script>
+
+@endpush
 
 @endsection

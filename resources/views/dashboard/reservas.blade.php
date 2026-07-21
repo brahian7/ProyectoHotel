@@ -74,7 +74,6 @@
                             @php
 
                                 $color='secondary';
-
                                 $icon='question-circle';
 
                                 if($reserva->estado=='Pendiente'){
@@ -109,37 +108,19 @@
 
                                 <td>
 
-                                    <div class="d-flex align-items-center">
+                                    <div class="fw-semibold">
 
-                                        <div class="rounded-circle bg-primary text-white fw-bold d-flex justify-content-center align-items-center me-3"
-
-                                             style="width:42px;height:42px;">
-
-                                            {{ strtoupper(substr($reserva->huesped->nombre,0,1)) }}
-
-                                        </div>
-
-                                        <div>
-
-                                            <div class="fw-semibold">
-
-                                                {{ $reserva->huesped->nombre }}
-
-                                                {{ $reserva->huesped->apellido }}
-
-                                            </div>
-
-                                            <small class="text-muted">
-
-                                                {{ $reserva->cantidad_personas }}
-
-                                                huésped(es)
-
-                                            </small>
-
-                                        </div>
+                                        {{ $reserva->huesped->nombre }}
+                                        {{ $reserva->huesped->apellido }}
 
                                     </div>
+
+                                    <small class="text-muted">
+
+                                        {{ $reserva->cantidad_personas }}
+                                        huésped(es)
+
+                                    </small>
 
                                 </td>
 
@@ -193,23 +174,19 @@
 
                                 <td class="text-center">
 
-                                    <div class="btn-group">
+                                    <div class="btn-group" role="group">
 
-                                        <a href="#"
-
+                                        <a href="{{ route('reservas.show', $reserva->id) }}"
                                            class="btn btn-sm btn-outline-primary"
-
-                                           title="Ver">
+                                           title="Ver reserva">
 
                                             <i class="bi bi-eye-fill"></i>
 
                                         </a>
 
-                                        <a href="#"
-
+                                        <a href="{{ route('reservas.edit', $reserva->id) }}"
                                            class="btn btn-sm btn-outline-warning"
-
-                                           title="Editar">
+                                           title="Editar reserva">
 
                                             <i class="bi bi-pencil-fill"></i>
 
