@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ReservaConfirmadaMail;
 
 class ReservaController extends Controller
     {
@@ -211,7 +213,12 @@ class ReservaController extends Controller
 
     ]);
 
-    // Verificar que la habitación no esté ocupada en esas fechas
+    /*
+    |--------------------------------------------------------------------------
+    | Verificar disponibilidad
+    |--------------------------------------------------------------------------
+    */
+
     $ocupada = Reserva::where('habitacion_id', $datos['habitacion_id'])
 
         ->whereNotIn('estado', ['Cancelada', 'Finalizada'])
@@ -248,38 +255,121 @@ class ReservaController extends Controller
 
     }
 
-    // Usuario autenticado
+    /*
+    |--------------------------------------------------------------------------
+    | Usuario autenticado
+    |--------------------------------------------------------------------------
+    */
+
     $datos['usuario_id'] = Auth::id();
 
-    // Obtener la habitación
+    /*
+    |--------------------------------------------------------------------------
+    | Habitación
+    |--------------------------------------------------------------------------
+    */
+
     $habitacion = Habitacion::findOrFail($datos['habitacion_id']);
 
-    // Generar código de reserva
+    /*
+    |--------------------------------------------------------------------------
+    | Código de reserva
+    |--------------------------------------------------------------------------
+    */
+
     $ultimoId = (Reserva::max('id') ?? 0) + 1;
 
     $datos['codigo_reserva'] = 'RES-' . str_pad($ultimoId, 6, '0', STR_PAD_LEFT);
 
-    // Calcular cantidad de noches
+    /*
+    |--------------------------------------------------------------------------
+    | Cantidad de noches
+    |--------------------------------------------------------------------------
+    */
+
     $datos['cantidad_noches'] = Carbon::parse($datos['fecha_ingreso'])
+
         ->diffInDays(Carbon::parse($datos['fecha_salida']));
 
-    // Guardar el precio de la habitación al momento de reservar
+    /*
+    |--------------------------------------------------------------------------
+    | Precio por noche
+    |--------------------------------------------------------------------------
+    */
+
     $datos['precio_noche'] = $habitacion->precio_noche;
 
-    // Calcular el total
-    $datos['total'] = $datos['cantidad_noches'] * $habitacion->precio_noche;
+    /*
+    |--------------------------------------------------------------------------
+    | Total
+    |--------------------------------------------------------------------------
+    */
 
-    // Crear reserva
-    Reserva::create($datos);
+    $datos['total'] =
 
-    // Cambiar estado de la habitación
+        $datos['cantidad_noches'] *
+
+        $habitacion->precio_noche;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Crear reserva
+    |--------------------------------------------------------------------------
+    */
+
+    $reserva = Reserva::create($datos);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Actualizar estado de la habitación
+    |--------------------------------------------------------------------------
+    */
+
     $habitacion->update([
+
         'estado' => 'Reservada'
+
     ]);
 
+    /*
+    |--------------------------------------------------------------------------
+    | Enviar correo al huésped
+    |--------------------------------------------------------------------------
+    */
+
+    try {
+
+        $reserva->load([
+            'huesped',
+            'habitacion',
+            'usuario'
+        ]);
+
+        if (!empty($reserva->huesped->correo)) {
+
+            Mail::to($reserva->huesped->correo)
+                ->send(new ReservaConfirmadaMail($reserva));
+
+        }
+
+    } catch (\Exception $e) {
+
+        report($e);
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Redirección
+    |--------------------------------------------------------------------------
+    */
+
     return redirect()
+
         ->route('reservas.index')
-        ->with('success', 'Reserva registrada correctamente.');
+
+        ->with('success', 'Reserva registrada correctamente. El correo de confirmación fue enviado al huésped.');
+
 }
 
     /**
