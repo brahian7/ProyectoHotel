@@ -102,6 +102,8 @@ if ($hora >= 5 && $hora < 12) {
 
                     </h4>
 
+                    {{-- Reservas de hoy --}}
+
                     <div class="d-flex justify-content-between align-items-center mb-3">
 
                         <span>
@@ -114,11 +116,13 @@ if ($hora >= 5 && $hora < 12) {
 
                         <span class="badge bg-success fs-6">
 
-                            {{ $reservasMes }}
+                            {{ $reservasHoy }}
 
                         </span>
 
                     </div>
+
+                    {{-- Check In --}}
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
 
@@ -130,13 +134,27 @@ if ($hora >= 5 && $hora < 12) {
 
                         </span>
 
-                        <span class="badge bg-warning text-dark">
+                        @if($checkInHoy > 0)
 
-                            Próximamente
+                            <span class="badge bg-warning text-dark fs-6">
 
-                        </span>
+                                {{ $checkInHoy }} Hoy
+
+                            </span>
+
+                        @else
+
+                            <span class="badge bg-secondary fs-6">
+
+                                Sin ingresos
+
+                            </span>
+
+                        @endif
 
                     </div>
+
+                    {{-- Check Out --}}
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
 
@@ -148,13 +166,27 @@ if ($hora >= 5 && $hora < 12) {
 
                         </span>
 
-                        <span class="badge bg-info">
+                        @if($checkOutHoy > 0)
 
-                            Próximamente
+                            <span class="badge bg-info fs-6">
 
-                        </span>
+                                {{ $checkOutHoy }} Hoy
+
+                            </span>
+
+                        @else
+
+                            <span class="badge bg-secondary fs-6">
+
+                                Sin salidas
+
+                            </span>
+
+                        @endif
 
                     </div>
+
+                    {{-- Estado del sistema --}}
 
                     <div class="d-flex justify-content-between align-items-center">
 

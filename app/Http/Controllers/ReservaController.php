@@ -428,6 +428,12 @@ class ReservaController extends Controller
 
     ]);
 
+    /*
+    |--------------------------------------------------------------------------
+    | Verificar disponibilidad
+    |--------------------------------------------------------------------------
+    */
+
     $ocupada = Reserva::where('habitacion_id', $datos['habitacion_id'])
 
         ->where('id', '!=', $reserva->id)
@@ -461,32 +467,59 @@ class ReservaController extends Controller
     if ($ocupada) {
 
         return back()
-
             ->withInput()
-
             ->with('error', 'La habitación ya está reservada para esas fechas.');
 
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Liberar habitación anterior si cambió
+    |--------------------------------------------------------------------------
+    */
+
     if ($reserva->habitacion_id != $datos['habitacion_id']) {
 
-        Habitacion::find($reserva->habitacion_id)
-            ?->update([
-                'estado' => 'Disponible'
-            ]);
+        Habitacion::find($reserva->habitacion_id)?->update([
+            'estado' => 'Disponible'
+        ]);
 
-        Habitacion::find($datos['habitacion_id'])
-            ?->update([
-                'estado' => 'Reservada'
-            ]);
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Actualizar reserva
+    |--------------------------------------------------------------------------
+    */
 
     $reserva->update($datos);
 
+    /*
+    |--------------------------------------------------------------------------
+    | Estado de la habitación según la reserva
+    |--------------------------------------------------------------------------
+    */
+
+    $estadoHabitacion = match ($datos['estado']) {
+
+        'Pendiente' => 'Reservada',
+
+        'Confirmada' => 'Ocupada',
+
+        'Finalizada' => 'Disponible',
+
+        'Cancelada' => 'Disponible',
+
+        default => 'Disponible',
+
+    };
+
+    Habitacion::find($datos['habitacion_id'])?->update([
+        'estado' => $estadoHabitacion
+    ]);
+
     return redirect()
-
         ->route('reservas.index')
-
         ->with('success', 'Reserva actualizada correctamente.');
 }
 

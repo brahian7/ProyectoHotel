@@ -154,11 +154,11 @@
                 </label>
 
                 <input
-                    id="fecha_ingreso"
-                    type="date"
-                    name="fecha_ingreso"
-                    class="form-control @error('fecha_ingreso') is-invalid @enderror"
-                    value="{{ old('fecha_ingreso',$reserva->fecha_ingreso ?? '') }}">
+                id="fecha_ingreso"
+                type="date"
+                name="fecha_ingreso"
+                class="form-control @error('fecha_ingreso') is-invalid @enderror"
+                value="{{ old('fecha_ingreso', isset($reserva) ? \Carbon\Carbon::parse($reserva->fecha_ingreso)->format('Y-m-d') : '') }}">
 
                 @error('fecha_ingreso')
 
@@ -182,11 +182,11 @@
                 </label>
 
                 <input
-                    id="fecha_salida"
-                    type="date"
-                    name="fecha_salida"
-                    class="form-control @error('fecha_salida') is-invalid @enderror"
-                    value="{{ old('fecha_salida',$reserva->fecha_salida ?? '') }}">
+                id="fecha_salida"
+                type="date"
+                name="fecha_salida"
+                class="form-control @error('fecha_salida') is-invalid @enderror"
+                value="{{ old('fecha_salida', isset($reserva) ? \Carbon\Carbon::parse($reserva->fecha_salida)->format('Y-m-d') : '') }}">
 
                 @error('fecha_salida')
 

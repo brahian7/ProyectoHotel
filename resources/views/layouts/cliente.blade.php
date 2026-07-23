@@ -19,6 +19,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
           rel="stylesheet">
 
+    {{-- Flatpickr --}}
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     {{-- SweetAlert2 --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -75,6 +79,11 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+{{-- Flatpickr --}}
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 
 {{-- Mensajes de éxito --}}
 @if(session('success'))

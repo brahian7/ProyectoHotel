@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Cliente;
 
 use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
 use Carbon\Carbon;
 
 use App\Models\Habitacion;
@@ -16,7 +14,7 @@ use App\Models\Huesped;
 class ReservaClienteController extends Controller
 {
     /**
-     * Mostrar las reservas del cliente.
+     * Mostrar reservas del cliente.
      */
     public function index()
     {
@@ -29,7 +27,7 @@ class ReservaClienteController extends Controller
     }
 
     /**
-     * Mostrar formulario para buscar habitaciones.
+     * Mostrar formulario de búsqueda.
      */
     public function create()
     {
@@ -91,7 +89,7 @@ class ReservaClienteController extends Controller
     }
 
     /**
-     * Mostrar formulario de confirmación.
+     * Confirmar la habitación seleccionada.
      */
     public function confirmar(Request $request)
     {
@@ -137,12 +135,6 @@ class ReservaClienteController extends Controller
 
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Buscar o crear huésped
-        |--------------------------------------------------------------------------
-        */
-
         $huesped = Huesped::firstOrCreate(
 
             [
@@ -171,38 +163,14 @@ class ReservaClienteController extends Controller
 
         );
 
-        /*
-        |--------------------------------------------------------------------------
-        | Buscar habitación
-        |--------------------------------------------------------------------------
-        */
-
         $habitacion = Habitacion::findOrFail($datos['habitacion_id']);
-
-        /*
-        |--------------------------------------------------------------------------
-        | Calcular noches
-        |--------------------------------------------------------------------------
-        */
 
         $cantidadNoches = Carbon::parse($datos['fecha_ingreso'])
             ->diffInDays(Carbon::parse($datos['fecha_salida']));
 
-        /*
-        |--------------------------------------------------------------------------
-        | Generar código
-        |--------------------------------------------------------------------------
-        */
-
         $ultimoId = (Reserva::max('id') ?? 0) + 1;
 
         $codigo = 'RES-' . str_pad($ultimoId, 6, '0', STR_PAD_LEFT);
-
-        /*
-        |--------------------------------------------------------------------------
-        | Crear reserva
-        |--------------------------------------------------------------------------
-        */
 
         Reserva::create([
 
@@ -234,12 +202,6 @@ class ReservaClienteController extends Controller
 
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Actualizar habitación
-        |--------------------------------------------------------------------------
-        */
-
         $habitacion->update([
 
             'estado' => 'Reservada'
@@ -250,53 +212,32 @@ class ReservaClienteController extends Controller
             ->route('cliente.reservas')
             ->with('success', '¡Reserva realizada correctamente!');
     }
-       
-       public function cancelar(Reserva $reserva)
-{
-    /*
-    |--------------------------------------------------------------------------
-    | Verificar que la reserva pertenece al cliente
-    |--------------------------------------------------------------------------
-    */
 
-    if ($reserva->usuario_id != Auth::id()) {
+    /**
+     * Cancelar reserva.
+     */
+    public function cancelar(Reserva $reserva)
+    {
+        if ($reserva->usuario_id != Auth::id()) {
 
-        abort(403);
+            abort(403);
 
-    }
+        }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Solo puede cancelar reservas pendientes
-    |--------------------------------------------------------------------------
-    */
+        if ($reserva->estado != 'Pendiente') {
 
-    if ($reserva->estado != 'Pendiente') {
+            return back()->with(
+                'error',
+                'Esta reserva ya no puede cancelarse.'
+            );
 
-        return back()->with(
-            'error',
-            'Esta reserva ya no puede cancelarse.'
-        );
+        }
 
-    }
+        $reserva->update([
 
-    /*
-    |--------------------------------------------------------------------------
-    | Cambiar estado de la reserva
-    |--------------------------------------------------------------------------
-    */
+            'estado' => 'Cancelada'
 
-    $reserva->update([
-
-        'estado' => 'Cancelada'
-
-    ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | Liberar habitación
-        |--------------------------------------------------------------------------
-        */
+        ]);
 
         $reserva->habitacion->update([
 

@@ -54,11 +54,11 @@ return new class extends Migration
 
             // Estado de la reserva
             $table->enum('estado', [
-                'Pendiente',
-                'Activa',
-                'Finalizada',
-                'Cancelada'
-            ]);
+            'Pendiente',
+            'Confirmada',
+            'Finalizada',
+            'Cancelada'
+        ]);
 
             // Observaciones
             $table->text('observaciones')->nullable();

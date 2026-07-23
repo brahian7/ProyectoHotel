@@ -1,170 +1,345 @@
 <x-guest-layout>
 
-    <div class="text-center mb-4">
+<style>
 
-        <i class="bi bi-building-fill text-primary" style="font-size:60px;"></i>
+@keyframes aparecer{
 
-        <h2 class="mt-3 fw-bold">
+    from{
 
-            Crear cuenta
+        opacity:0;
 
-        </h2>
+        transform:translateY(40px);
 
-        <p class="text-muted">
+    }
 
-            Regístrate para reservar tu habitación.
+    to{
 
-        </p>
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+.registro-card{
+
+    animation:aparecer .8s ease;
+
+}
+
+.btn-primary{
+
+    background:#3E5C76;
+
+    border-color:#3E5C76;
+
+    transition:.3s;
+
+}
+
+.btn-primary:hover{
+
+    background:#2F4858;
+
+    border-color:#2F4858;
+
+    transform:translateY(-2px);
+
+}
+
+.icono-principal{
+
+    width:90px;
+
+    height:90px;
+
+    background:#3E5C76;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin:auto;
+
+    margin-bottom:20px;
+
+    box-shadow:0 10px 30px rgba(62,92,118,.30);
+
+}
+
+.input-group .btn{
+
+    border-left:none;
+
+}
+
+.form-control:focus{
+
+    box-shadow:none;
+
+    border-color:#3E5C76;
+
+}
+
+</style>
+
+<div class="registro-card">
+
+<div class="text-center mb-5">
+
+    <div class="icono-principal">
+
+        <i class="bi bi-person-plus-fill text-white fs-1"></i>
 
     </div>
 
-    <form method="POST" action="{{ route('register') }}">
+    <h2 class="fw-bold">
 
-        @csrf
+        Crear cuenta
 
-        {{-- Nombre --}}
+    </h2>
 
-        <div>
+    <p class="text-muted">
 
-            <x-input-label
-                for="nombre"
-                value="Nombre"
-            />
+        Regístrate para comenzar a reservar habitaciones.
 
-            <x-text-input
-                id="nombre"
-                class="block mt-1 w-full"
+    </p>
+
+</div>
+
+<form method="POST"
+      action="{{ route('register') }}">
+
+    @csrf
+
+    <div class="row">
+
+        <div class="col-md-6 mb-4">
+
+            <label class="form-label fw-semibold">
+
+                Nombre
+
+            </label>
+
+            <input
                 type="text"
                 name="nombre"
-                :value="old('nombre')"
-                required
-                autofocus
-            />
+                class="form-control"
+                placeholder="Ingresa tu nombre"
+                value="{{ old('nombre') }}"
+                required>
 
             <x-input-error
                 :messages="$errors->get('nombre')"
-                class="mt-2"
-            />
+                class="mt-2"/>
 
         </div>
 
-        {{-- Apellido --}}
+        <div class="col-md-6 mb-4">
 
-        <div class="mt-4">
+            <label class="form-label fw-semibold">
 
-            <x-input-label
-                for="apellido"
-                value="Apellido"
-            />
+                Apellido
 
-            <x-text-input
-                id="apellido"
-                class="block mt-1 w-full"
+            </label>
+
+            <input
                 type="text"
                 name="apellido"
-                :value="old('apellido')"
-                required
-            />
+                class="form-control"
+                placeholder="Ingresa tu apellido"
+                value="{{ old('apellido') }}"
+                required>
 
             <x-input-error
                 :messages="$errors->get('apellido')"
-                class="mt-2"
-            />
+                class="mt-2"/>
 
         </div>
 
-        {{-- Correo --}}
+    </div>
 
-        <div class="mt-4">
+    <div class="mb-4">
 
-            <x-input-label
-                for="email"
-                value="Correo electrónico"
-            />
+        <label class="form-label fw-semibold">
 
-            <x-text-input
-                id="email"
-                class="block mt-1 w-full"
-                type="email"
-                name="email"
-                :value="old('email')"
-                required
-            />
+            Correo electrónico
 
-            <x-input-error
-                :messages="$errors->get('email')"
-                class="mt-2"
-            />
+        </label>
 
-        </div>
+        <input
+            type="email"
+            name="email"
+            class="form-control"
+            placeholder="ejemplo@correo.com"
+            value="{{ old('email') }}"
+            required>
 
-        {{-- Contraseña --}}
+        <x-input-error
+            :messages="$errors->get('email')"
+            class="mt-2"/>
 
-        <div class="mt-4">
+    </div>
 
-            <x-input-label
-                for="password"
-                value="Contraseña"
-            />
+    <div class="row">
 
-            <x-text-input
-                id="password"
-                class="block mt-1 w-full"
-                type="password"
-                name="password"
-                required
-            />
+        <div class="col-md-6 mb-4">
+
+            <label class="form-label fw-semibold">
+
+                Contraseña
+
+            </label>
+
+            <div class="input-group">
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="form-control"
+                    placeholder="Mínimo 8 caracteres"
+                    required>
+
+                <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    onclick="togglePassword('password',this)">
+
+                    <i class="bi bi-eye"></i>
+
+                </button>
+
+            </div>
 
             <x-input-error
                 :messages="$errors->get('password')"
-                class="mt-2"
-            />
+                class="mt-2"/>
 
         </div>
 
-        {{-- Confirmar contraseña --}}
+        <div class="col-md-6 mb-4">
 
-        <div class="mt-4">
+            <label class="form-label fw-semibold">
 
-            <x-input-label
-                for="password_confirmation"
-                value="Confirmar contraseña"
-            />
+                Confirmar contraseña
 
-            <x-text-input
-                id="password_confirmation"
-                class="block mt-1 w-full"
-                type="password"
-                name="password_confirmation"
-                required
-            />
+            </label>
 
-            <x-input-error
-                :messages="$errors->get('password_confirmation')"
-                class="mt-2"
-            />
+            <div class="input-group">
 
-        </div>
+                <input
+                    type="password"
+                    id="password_confirmation"
+                    name="password_confirmation"
+                    class="form-control"
+                    placeholder="Repite tu contraseña"
+                    required>
 
-        <div class="flex items-center justify-between mt-6">
+                <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    onclick="togglePassword('password_confirmation',this)">
 
-            <a
-                href="{{ route('login') }}"
-                class="underline text-sm text-gray-600 hover:text-gray-900"
-            >
+                    <i class="bi bi-eye"></i>
 
-                ¿Ya tienes cuenta?
+                </button>
 
-            </a>
-
-            <x-primary-button>
-
-                Crear Cuenta
-
-            </x-primary-button>
+            </div>
 
         </div>
 
-    </form>
+    </div>
+
+    <div class="alert alert-light border rounded-4">
+
+        <h6 class="fw-bold mb-3">
+
+            <i class="bi bi-stars text-warning me-2"></i>
+
+            Beneficios de crear una cuenta
+
+        </h6>
+
+        <ul class="mb-0">
+
+            <li>Reserva habitaciones en pocos minutos.</li>
+
+            <li>Consulta el historial de tus reservas.</li>
+
+            <li>Cancela reservas fácilmente.</li>
+
+            <li>Proceso 100% seguro.</li>
+
+        </ul>
+
+    </div>
+
+    <div class="d-grid mt-4">
+
+        <button class="btn btn-primary btn-lg">
+
+            <i class="bi bi-person-check-fill me-2"></i>
+
+            Crear mi cuenta
+
+        </button>
+
+    </div>
+
+    <div class="text-center mt-4">
+
+        ¿Ya tienes una cuenta?
+
+        <a
+            href="{{ route('login') }}"
+            class="fw-bold text-decoration-none"
+            style="color:#3E5C76;">
+
+            Inicia sesión
+
+        </a>
+
+    </div>
+
+</form>
+
+</div>
+
+<script>
+
+function togglePassword(id, boton){
+
+    let input=document.getElementById(id);
+
+    let icono=boton.querySelector("i");
+
+    if(input.type==="password"){
+
+        input.type="text";
+
+        icono.classList.remove("bi-eye");
+
+        icono.classList.add("bi-eye-slash");
+
+    }else{
+
+        input.type="password";
+
+        icono.classList.remove("bi-eye-slash");
+
+        icono.classList.add("bi-eye");
+
+    }
+
+}
+
+</script>
 
 </x-guest-layout>
