@@ -4,30 +4,53 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        User::create([
-            'nombre' => 'Administrador',
-            'apellido' => 'Principal',
-            'email' => 'admin@hotel.com',
-            'password' => bcrypt('12345678'),
-            'rol' => 'Administrador',
-            'estado' => true,
-        ]);
+        /*
+        |--------------------------------------------------------------------------
+        | Administrador
+        |--------------------------------------------------------------------------
+        */
+        User::updateOrCreate(
+            ['email' => 'admin@hotel.com'],
+            [
+                'nombre' => 'Administrador',
+                'apellido' => 'Sistema',
+                'password' => Hash::make('12345678'),
+                'rol' => 'Administrador',
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Recepcionista
+        |--------------------------------------------------------------------------
+        */
 
         User::create([
             'nombre' => 'Recepcionista',
             'apellido' => 'Hotel',
             'email' => 'recepcion@hotel.com',
-            'password' => bcrypt('12345678'),
+            'password' => Hash::make('12345678'),
             'rol' => 'Recepcionista',
-            'estado' => true,
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Cliente
+        |--------------------------------------------------------------------------
+        */
+
+        User::create([
+            'nombre' => 'Juan',
+            'apellido' => 'Muñoz',
+            'email' => 'juanmu@gmail.com',
+            'password' => Hash::make('12345678'),
+            'rol' => 'Cliente',
         ]);
     }
 }
