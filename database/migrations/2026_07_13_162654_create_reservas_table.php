@@ -53,12 +53,8 @@ return new class extends Migration
             $table->decimal('total', 10, 2);
 
             // Estado de la reserva
-            $table->enum('estado', [
-            'Pendiente',
-            'Confirmada',
-            'Finalizada',
-            'Cancelada'
-        ]);
+            $table->string('estado')
+            ->default('Pendiente');
 
             // Observaciones
             $table->text('observaciones')->nullable();

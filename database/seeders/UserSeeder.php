@@ -8,49 +8,69 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
+    /**
+     * Seed de usuarios base del sistema.
+     */
     public function run(): void
     {
-        /*
-        |--------------------------------------------------------------------------
-        | Administrador
-        |--------------------------------------------------------------------------
-        */
+        // ============================
+        // Administrador
+        // ============================
+
         User::updateOrCreate(
-            ['email' => 'admin@hotel.com'],
+
+            [
+                'email' => 'admin@hotel.com'
+            ],
+
             [
                 'nombre' => 'Administrador',
                 'apellido' => 'Sistema',
                 'password' => Hash::make('12345678'),
                 'rol' => 'Administrador',
+                'estado' => true,
             ]
+
         );
 
-        /*
-        |--------------------------------------------------------------------------
-        | Recepcionista
-        |--------------------------------------------------------------------------
-        */
+        // ============================
+        // Recepcionista
+        // ============================
 
-        User::create([
-            'nombre' => 'Recepcionista',
-            'apellido' => 'Hotel',
-            'email' => 'recepcion@hotel.com',
-            'password' => Hash::make('12345678'),
-            'rol' => 'Recepcionista',
-        ]);
+        User::updateOrCreate(
 
-        /*
-        |--------------------------------------------------------------------------
-        | Cliente
-        |--------------------------------------------------------------------------
-        */
+            [
+                'email' => 'recepcion@hotel.com'
+            ],
 
-        User::create([
-            'nombre' => 'Juan',
-            'apellido' => 'Muñoz',
-            'email' => 'juanmu@gmail.com',
-            'password' => Hash::make('12345678'),
-            'rol' => 'Cliente',
-        ]);
+            [
+                'nombre' => 'Recepcionista',
+                'apellido' => 'Hotel',
+                'password' => Hash::make('12345678'),
+                'rol' => 'Recepcionista',
+                'estado' => true,
+            ]
+
+        );
+
+        // ============================
+        // Cliente
+        // ============================
+
+        User::updateOrCreate(
+
+            [
+                'email' => 'juanmu@gmail.com'
+            ],
+
+            [
+                'nombre' => 'Juan',
+                'apellido' => 'Muñoz',
+                'password' => Hash::make('12345678'),
+                'rol' => 'Cliente',
+                'estado' => true,
+            ]
+
+        );
     }
 }
