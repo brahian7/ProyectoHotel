@@ -53,7 +53,12 @@ Route::middleware(['auth'])->group(function () {
         |--------------------------------------------------------------------------
         */
 
-        Route::resource('huespedes', HuespedController::class);
+        // Exportar PDF
+        Route::get('huespedes/pdf', [HuespedController::class, 'pdf'])
+            ->name('huespedes.pdf');
+
+// CRUD
+Route::resource('huespedes', HuespedController::class);
 
         /*
         |--------------------------------------------------------------------------

@@ -17,52 +17,134 @@
             </h2>
 
             <p class="text-muted mb-0">
-                Administra la información de los huéspedes registrados.
+                Administre, consulte y controle todos los huéspedes registrados.
             </p>
 
         </div>
 
-        <a href="{{ route('huespedes.create') }}"
-           class="btn btn-primary">
+        <div class="d-flex gap-2">
 
-            <i class="bi bi-plus-circle"></i>
+            <a href="{{ route('huespedes.pdf', request()->query()) }}"
+               class="btn btn-danger px-4">
 
-            Nuevo Huésped
+                <i class="bi bi-file-earmark-pdf me-2"></i>
 
-        </a>
+                Exportar PDF
+
+            </a>
+
+            <a href="{{ route('huespedes.create') }}"
+               class="btn btn-primary px-4">
+
+                <i class="bi bi-plus-circle me-2"></i>
+
+                Nuevo Huésped
+
+            </a>
+
+        </div>
 
     </div>
 
-    {{-- Buscador --}}
-    <div class="card shadow-sm mb-4">
+    {{-- Filtros --}}
+    <div class="card border-0 shadow-lg rounded-4 mb-4">
 
-        <div class="card-body">
+        <div class="card-body p-4">
 
             <form method="GET"
                   action="{{ route('huespedes.index') }}">
 
-                <div class="row">
+                <div class="row g-3 align-items-end">
 
-                    <div class="col-md-5">
+                    <div class="col-md-3">
+
+                        <label class="form-label fw-bold">
+                            Buscar
+                        </label>
 
                         <input
                             type="text"
                             name="buscar"
                             class="form-control"
-                            placeholder="Buscar por nombre o documento..."
-                            value="{{ $buscar }}">
+                            placeholder="Nombre o apellido..."
+                            value="{{ request('buscar') }}">
 
                     </div>
 
                     <div class="col-md-2">
 
-                        <button class="btn btn-dark w-100">
+                        <label class="form-label fw-bold">
+                            Ciudad
+                        </label>
 
-                            <i class="bi bi-search"></i>
+                        <select
+                            name="ciudad"
+                            class="form-select">
+
+                            <option value="">Todas</option>
+
+                            @foreach($ciudades as $ciudad)
+
+                                <option
+                                    value="{{ $ciudad }}"
+                                    {{ request('ciudad') == $ciudad ? 'selected' : '' }}>
+
+                                    {{ $ciudad }}
+
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-2">
+
+                        <label class="form-label fw-bold">
+                            Documento
+                        </label>
+
+                        <input
+                            type="text"
+                            name="documento"
+                            class="form-control"
+                            value="{{ request('documento') }}">
+
+                    </div>
+
+                    <div class="col-md-2">
+
+                        <label class="form-label fw-bold">
+                            Correo
+                        </label>
+
+                        <input
+                            type="text"
+                            name="correo"
+                            class="form-control"
+                            value="{{ request('correo') }}">
+
+                    </div>
+
+                    <div class="col-md-3 d-grid">
+
+                        <button
+                            class="btn btn-primary mb-2">
+
+                            <i class="bi bi-search me-2"></i>
 
                             Buscar
 
                         </button>
+
+                        <a
+                            href="{{ route('huespedes.index') }}"
+                            class="btn btn-outline-secondary">
+
+                            Limpiar
+
+                        </a>
 
                     </div>
 
@@ -75,98 +157,123 @@
     </div>
 
     {{-- Tabla --}}
-    <div class="card shadow">
+    <div class="card border-0 shadow">
 
-        <div class="card-body">
+        <div class="table-responsive">
 
-            <div class="table-responsive">
+            <table class="table align-middle mb-0">
 
-                <table class="table table-hover align-middle">
+                <thead class="table-dark">
 
-                    <thead class="table-dark">
+                    <tr>
 
-                        <tr>
+                        <th>Documento</th>
 
-                            <th>Documento</th>
+                        <th>Huésped</th>
 
-                            <th>Nombre Completo</th>
+                        <th>Teléfono</th>
 
-                            <th>Teléfono</th>
+                        <th>Correo</th>
 
-                            <th>Correo</th>
+                        <th>Ciudad</th>
 
-                            <th>Ciudad</th>
+                        <th class="text-center">Acciones</th>
 
-                            <th width="180">Acciones</th>
+                    </tr>
 
-                        </tr>
+                </thead>
 
-                    </thead>
+                <tbody>
 
-                    <tbody>
-                                            @forelse($huespedes as $huesped)
+                @forelse($huespedes as $huesped)
 
-                        <tr>
+                    <tr>
 
-                            <td>
+                        <td>
 
-                                <strong>{{ $huesped->numero_documento }}</strong>
+                            <strong>
 
-                            </td>
+                                {{ $huesped->numero_documento }}
 
-                            <td>
+                            </strong>
 
-                                {{ $huesped->nombres }}
-                                {{ $huesped->apellidos }}
+                        </td>
 
-                            </td>
+                        <td>
 
-                            <td>
+                            <div class="d-flex align-items-center">
 
-                                {{ $huesped->telefono }}
+                                <div
+                                    class="rounded-circle bg-primary text-white fw-bold d-flex justify-content-center align-items-center me-3"
+                                    style="width:55px;height:55px;font-size:22px;">
 
-                            </td>
+                                    {{ strtoupper(substr($huesped->nombres,0,1)) }}
 
-                            <td>
+                                </div>
 
-                                {{ $huesped->correo ?? 'No registrado' }}
+                                <div>
 
-                            </td>
+                                    <h5 class="mb-1">
 
-                            <td>
+                                        {{ $huesped->nombres }}
+                                        {{ $huesped->apellidos }}
 
-                                {{ $huesped->ciudad ?? 'No registrada' }}
+                                    </h5>
 
-                            </td>
+                                </div>
 
-                            <td>
+                            </div>
 
-                                <a href="{{ route('huespedes.show', $huesped) }}"
-                                   class="btn btn-info btn-sm">
+                        </td>
+
+                        <td>
+
+                            {{ $huesped->telefono }}
+
+                        </td>
+
+                        <td>
+
+                            {{ $huesped->correo ?? 'No registrado' }}
+
+                        </td>
+
+                        <td>
+
+                            {{ $huesped->ciudad ?? 'No registrada' }}
+
+                        </td>
+
+                        <td class="text-center">
+
+                            <div class="btn-group">
+
+                                <a
+                                    href="{{ route('huespedes.show',$huesped) }}"
+                                    class="btn btn-outline-primary">
 
                                     <i class="bi bi-eye-fill"></i>
 
                                 </a>
 
-                                <a href="{{ route('huespedes.edit', $huesped) }}"
-                                   class="btn btn-warning btn-sm">
+                                <a
+                                    href="{{ route('huespedes.edit',$huesped) }}"
+                                    class="btn btn-outline-warning">
 
                                     <i class="bi bi-pencil-fill"></i>
 
                                 </a>
 
                                 <form
-                                    action="{{ route('huespedes.destroy', $huesped) }}"
+                                    action="{{ route('huespedes.destroy',$huesped) }}"
                                     method="POST"
                                     class="d-inline formulario-eliminar">
 
                                     @csrf
-
                                     @method('DELETE')
 
                                     <button
-                                        type="submit"
-                                        class="btn btn-danger btn-sm">
+                                        class="btn btn-outline-danger">
 
                                         <i class="bi bi-trash-fill"></i>
 
@@ -174,41 +281,42 @@
 
                                 </form>
 
-                            </td>
+                            </div>
 
-                        </tr>
+                        </td>
 
-                    @empty
+                    </tr>
 
-                        <tr>
+                @empty
 
-                            <td colspan="6" class="text-center text-muted py-4">
+                    <tr>
 
-                                <i class="bi bi-person-x-fill fs-2"></i>
+                        <td colspan="6"
+                            class="text-center py-5 text-muted">
 
-                                <br><br>
+                            <i class="bi bi-people fs-1"></i>
 
-                                No existen huéspedes registrados.
+                            <br><br>
 
-                            </td>
+                            No existen huéspedes registrados.
 
-                        </tr>
+                        </td>
 
-                    @endforelse
+                    </tr>
 
-                    </tbody>
+                @endforelse
 
-                </table>
+                </tbody>
 
-            </div>
-
-            <div class="mt-3">
-
-                {{ $huespedes->links() }}
-
-            </div>
+            </table>
 
         </div>
+
+    </div>
+
+    <div class="mt-4">
+
+        {{ $huespedes->withQueryString()->links() }}
 
     </div>
 

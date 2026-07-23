@@ -76,25 +76,26 @@
 
             </a>
 
-            {{-- Futuro módulo de usuarios --}}
+            {{--
+            ==========================================================
+            MÓDULO DE USUARIOS
+            Descomentar este bloque cuando se implemente el CRUD
+            ==========================================================
+
             @if(Auth::user()->rol == 'Administrador')
 
-                <a href="#"
-                   class="list-group-item list-group-item-action disabled">
+                <a href="{{ route('usuarios.index') }}"
+                   class="list-group-item list-group-item-action">
 
                     <i class="bi bi-person-gear me-2"></i>
 
                     Usuarios
 
-                    <span class="badge bg-secondary float-end">
-
-                        Próximamente
-
-                    </span>
-
                 </a>
 
             @endif
+
+            --}}
 
         </div>
 

@@ -4,28 +4,131 @@ namespace App\Http\Controllers;
 
 use App\Models\Huesped;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class HuespedController extends Controller
 {
     /**
  * Mostrar listado de huéspedes.
  */
-public function index(Request $request)
+        public function index(Request $request)
 {
     $buscar = $request->buscar;
+    $ciudad = $request->ciudad;
+    $documento = $request->documento;
+    $correo = $request->correo;
 
-    $huespedes = Huesped::when($buscar, function ($query) use ($buscar) {
+    $huespedes = Huesped::query()
 
-        $query->where('nombres', 'like', "%{$buscar}%")
-              ->orWhere('apellidos', 'like', "%{$buscar}%")
-              ->orWhere('numero_documento', 'like', "%{$buscar}%");
+        ->when($buscar, function ($query) use ($buscar) {
 
-    })
-    ->orderBy('nombres')
-    ->paginate(10);
+            $query->where(function ($q) use ($buscar) {
 
-    return view('huespedes.index', compact('huespedes', 'buscar'));
+                $q->where('nombres', 'like', "%{$buscar}%")
+                  ->orWhere('apellidos', 'like', "%{$buscar}%");
+
+            });
+
+        })
+
+        ->when($ciudad, function ($query) use ($ciudad) {
+
+            $query->where('ciudad', $ciudad);
+
+        })
+
+        ->when($documento, function ($query) use ($documento) {
+
+            $query->where('numero_documento', 'like', "%{$documento}%");
+
+        })
+
+        ->when($correo, function ($query) use ($correo) {
+
+            $query->where('correo', 'like', "%{$correo}%");
+
+        })
+
+        ->orderBy('nombres')
+        ->paginate(10)
+        ->withQueryString();
+
+    $ciudades = Huesped::select('ciudad')
+        ->whereNotNull('ciudad')
+        ->where('ciudad', '<>', '')
+        ->distinct()
+        ->orderBy('ciudad')
+        ->pluck('ciudad');
+
+    return view('huespedes.index', compact(
+        'huespedes',
+        'buscar',
+        'ciudad',
+        'documento',
+        'correo',
+        'ciudades'
+    ));
 }
+
+/**
+ * Exportar huéspedes a PDF.
+ */
+    public function pdf(Request $request)
+    {
+        $buscar = $request->buscar;
+        $ciudad = $request->ciudad;
+        $documento = $request->documento;
+        $correo = $request->correo;
+
+        $huespedes = Huesped::query()
+
+            ->when($buscar, function ($query) use ($buscar) {
+
+                $query->where(function ($q) use ($buscar) {
+
+                    $q->where('nombres', 'like', "%{$buscar}%")
+                    ->orWhere('apellidos', 'like', "%{$buscar}%");
+
+                });
+
+            })
+
+            ->when($ciudad, function ($query) use ($ciudad) {
+
+                $query->where('ciudad', $ciudad);
+
+            })
+
+            ->when($documento, function ($query) use ($documento) {
+
+                $query->where('numero_documento', 'like', "%{$documento}%");
+
+            })
+
+            ->when($correo, function ($query) use ($correo) {
+
+                $query->where('correo', 'like', "%{$correo}%");
+
+            })
+
+            ->orderBy('nombres')
+
+            ->get();
+
+        $filtros = [
+            'buscar' => $buscar,
+            'ciudad' => $ciudad,
+            'documento' => $documento,
+            'correo' => $correo,
+        ];
+
+        $pdf = Pdf::loadView('huespedes.pdf', compact(
+            'huespedes',
+            'filtros'
+        ));
+
+        return $pdf->stream('Listado_Huespedes.pdf');
+    }
 
         /**
      * Mostrar formulario para crear un huésped.
@@ -147,4 +250,5 @@ public function index(Request $request)
 
         }
     }
+
 }
