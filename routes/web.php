@@ -9,6 +9,7 @@ use App\Http\Controllers\HabitacionController;
 use App\Http\Controllers\HuespedController;
 use App\Http\Controllers\ReservaController;
 use App\Http\Controllers\Cliente\ReservaClienteController;
+use App\Http\Controllers\OtpController;
 
 /*
 |--------------------------------------------------------------------------
@@ -168,5 +169,11 @@ Route::middleware(['auth', 'role:Cliente'])
 | Autenticación
 |--------------------------------------------------------------------------
 */
+
+    Route::get('/otp', [OtpController::class, 'create'])
+    ->name('otp.form');
+
+Route::post('/otp', [OtpController::class, 'store'])
+    ->name('otp.verify');
 
 require __DIR__.'/auth.php';

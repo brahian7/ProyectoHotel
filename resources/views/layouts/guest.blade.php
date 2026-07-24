@@ -67,6 +67,7 @@
         .hotel-icon{
 
             width:90px;
+
             height:90px;
 
             background:white;
@@ -121,89 +122,89 @@
 
 <div class="container">
 
-<div class="row justify-content-center">
+    <div class="row justify-content-center">
 
-<div class="col-xl-10">
+        <div class="col-xl-10">
 
-<div class="card login-card">
+            <div class="card login-card">
 
-<div class="row g-0">
+                <div class="row g-0">
 
-<div class="col-lg-6 left-panel">
+                    <div class="col-lg-6 left-panel">
 
-{{ $slot }}
+                        {{ $slot }}
 
-</div>
+                    </div>
 
-<div class="col-lg-6 right-panel d-flex flex-column justify-content-center">
+                    <div class="col-lg-6 right-panel d-flex flex-column justify-content-center">
 
-<div class="hotel-icon">
+                        <div class="hotel-icon">
 
-<i class="bi bi-building-fill"></i>
+                            <i class="bi bi-building-fill"></i>
 
-</div>
+                        </div>
 
-<h2 class="fw-bold">
+                        <h2 class="fw-bold">
 
-Hotel Central La Italia
+                            Hotel Central La Italia
 
-</h2>
+                        </h2>
 
-<p class="opacity-75 mb-5">
+                        <p class="opacity-75 mb-5">
 
-Sistema de Gestión Hotelera
+                            Sistema de Gestión Hotelera
 
-</p>
+                        </p>
 
-<div class="feature">
+                        <div class="feature">
 
-<i class="bi bi-check-circle-fill me-2"></i>
+                            <i class="bi bi-check-circle-fill me-2"></i>
 
-Reserva habitaciones completamente en línea.
+                            Reserva habitaciones completamente en línea.
 
-</div>
+                        </div>
 
-<div class="feature">
+                        <div class="feature">
 
-<i class="bi bi-check-circle-fill me-2"></i>
+                            <i class="bi bi-check-circle-fill me-2"></i>
 
-Consulta el estado de tus reservas.
+                            Consulta el estado de tus reservas.
 
-</div>
+                        </div>
 
-<div class="feature">
+                        <div class="feature">
 
-<i class="bi bi-check-circle-fill me-2"></i>
+                            <i class="bi bi-check-circle-fill me-2"></i>
 
-Cancela reservas cuando lo necesites.
+                            Cancela reservas cuando lo necesites.
 
-</div>
+                        </div>
 
-<div class="feature">
+                        <div class="feature">
 
-<i class="bi bi-check-circle-fill me-2"></i>
+                            <i class="bi bi-check-circle-fill me-2"></i>
 
-Información protegida y segura.
+                            Información protegida y segura.
 
-</div>
+                        </div>
 
-<div class="mt-5">
+                        <div class="mt-5">
 
-<i class="bi bi-geo-alt-fill me-2"></i>
+                            <i class="bi bi-geo-alt-fill me-2"></i>
 
-Cartago, Valle del Cauca
+                            Cartago, Valle del Cauca
 
-</div>
+                        </div>
 
-</div>
+                    </div>
 
-</div>
+                </div>
 
-</div>
+            </div>
 
-</div>
+        </div>
 
-</div>
+    </div>
 
 </div>
 

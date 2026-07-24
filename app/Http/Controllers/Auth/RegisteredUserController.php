@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use App\Mail\OtpCodeMail;
+use App\Models\OtpCode;
+use Illuminate\Support\Facades\Mail;
 
 class RegisteredUserController extends Controller
 {
@@ -69,7 +72,7 @@ class RegisteredUserController extends Controller
 
             'password' => Hash::make($request->password),
 
-            // Todo usuario registrado desde la web será Cliente
+            // todo usuario registrado desde la web será Cliente
             'rol' => 'Cliente',
 
             // Activo por defecto
@@ -79,8 +82,60 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        /*
+        |--------------------------------------------------------------------------
+        | Generar OTP
+        |--------------------------------------------------------------------------
+        */
 
-        return redirect()->route('dashboard');
-    }
+        $codigo = random_int(100000, 999999);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Eliminar códigos anteriores
+        |--------------------------------------------------------------------------
+        */
+
+        OtpCode::where('user_id', $user->id)->delete();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Guardar nuevo código
+        |--------------------------------------------------------------------------
+        */
+
+        OtpCode::create([
+            'user_id'   => $user->id,
+            'codigo'    => $codigo,
+            'expira_en' => now()->addMinutes(10),
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Enviar correo
+        |--------------------------------------------------------------------------
+        */
+
+        Mail::to($user->email)->send(
+            new OtpCodeMail($codigo)
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Guardar usuario pendiente de verificar
+        |--------------------------------------------------------------------------
+        */
+
+        session([
+            'otp_user' => $user->id,
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Redirigir al formulario OTP
+        |--------------------------------------------------------------------------
+        */
+
+        return redirect()->route('otp.form');
+     }
 }
