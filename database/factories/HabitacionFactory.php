@@ -2,34 +2,40 @@
 
 namespace Database\Factories;
 
+use App\Models\Habitacion;
+use Faker\Factory as FakerFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class HabitacionFactory extends Factory
 {
+    protected $model = Habitacion::class;
+
     public function definition(): array
     {
+        $faker = FakerFactory::create('es_CO');
+
         return [
 
-            'numero' => $this->faker->unique()->numberBetween(101, 999),
+            'numero' => $faker->unique()->numberBetween(101, 999),
 
-            'tipo' => $this->faker->randomElement([
+            'tipo' => $faker->randomElement([
                 'Sencilla',
                 'Doble',
                 'Triple',
-                'Suite'
+                'Suite',
             ]),
 
-            'capacidad' => $this->faker->numberBetween(1, 6),
+            'capacidad' => $faker->numberBetween(1, 6),
 
-            'precio_noche' => $this->faker->randomFloat(2, 80000, 500000),
+            'precio_noche' => $faker->randomFloat(2, 80000, 500000),
 
-            'estado' => $this->faker->randomElement([
+            'estado' => $faker->randomElement([
                 'Disponible',
                 'Ocupada',
-                'Mantenimiento'
+                'Mantenimiento',
             ]),
 
-            'descripcion' => $this->faker->sentence(),
+            'descripcion' => $faker->sentence(),
 
             'imagen' => null,
 
