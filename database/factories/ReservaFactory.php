@@ -17,16 +17,18 @@ class ReservaFactory extends Factory
     {
         $habitacion = Habitacion::inRandomOrder()->first();
 
-        $ingreso = fake()->dateTimeBetween('+1 day', '+1 month');
+        $ingreso = $this->faker->dateTimeBetween('+1 day', '+1 month');
 
-        $salida = (clone $ingreso)->modify('+' . fake()->numberBetween(1, 7) . ' days');
+        $salida = (clone $ingreso)->modify(
+            '+' . $this->faker->numberBetween(1, 7) . ' days'
+        );
 
         $noches = Carbon::parse($ingreso)
             ->diffInDays(Carbon::parse($salida));
 
         return [
 
-            'codigo_reserva' => 'RES-' . fake()->unique()->numerify('######'),
+            'codigo_reserva' => 'RES-' . $this->faker->unique()->numerify('######'),
 
             'usuario_id' => User::inRandomOrder()->first()->id,
 
@@ -40,7 +42,7 @@ class ReservaFactory extends Factory
 
             'fecha_salida' => $salida,
 
-            'cantidad_personas' => fake()->numberBetween(1, 4),
+            'cantidad_personas' => $this->faker->numberBetween(1, 4),
 
             'cantidad_noches' => $noches,
 
@@ -48,14 +50,14 @@ class ReservaFactory extends Factory
 
             'total' => $habitacion->precio_noche * $noches,
 
-            'estado' => fake()->randomElement([
+            'estado' => $this->faker->randomElement([
                 'Pendiente',
                 'Confirmada',
                 'Cancelada',
                 'Finalizada'
             ]),
 
-            'observaciones' => fake()->optional()->sentence(),
+            'observaciones' => $this->faker->optional()->sentence(),
 
         ];
     }

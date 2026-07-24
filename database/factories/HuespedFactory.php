@@ -12,15 +12,29 @@ class HuespedFactory extends Factory
     public function definition(): array
     {
         return [
-            'tipo_documento' => fake()->randomElement(['CC', 'CE', 'Pasaporte']),
-            'numero_documento' => fake()->unique()->numerify('##########'),
-            'nombres' => fake()->firstName(),
-            'apellidos' => fake()->lastName(),
-            'telefono' => fake()->numerify('3#########'),
-            'correo' => fake()->unique()->safeEmail(),
-            'direccion' => fake()->streetAddress(),
-            'ciudad' => fake()->city(),
+
+            'tipo_documento' => $this->faker->randomElement([
+                'CC',
+                'CE',
+                'Pasaporte'
+            ]),
+
+            'numero_documento' => $this->faker->unique()->numerify('##########'),
+
+            'nombres' => $this->faker->firstName(),
+
+            'apellidos' => $this->faker->lastName(),
+
+            'telefono' => $this->faker->numerify('3#########'),
+
+            'correo' => $this->faker->unique()->safeEmail(),
+
+            'direccion' => $this->faker->streetAddress(),
+
+            'ciudad' => $this->faker->city(),
+
             'fecha_registro' => now(),
+
         ];
     }
 }

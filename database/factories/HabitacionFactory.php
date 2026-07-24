@@ -9,28 +9,30 @@ class HabitacionFactory extends Factory
     public function definition(): array
     {
         return [
-            'numero' => fake()->unique()->numberBetween(101, 999),
 
-            'tipo' => fake()->randomElement([
+            'numero' => $this->faker->unique()->numberBetween(101, 999),
+
+            'tipo' => $this->faker->randomElement([
                 'Sencilla',
                 'Doble',
                 'Triple',
                 'Suite'
             ]),
 
-            'capacidad' => fake()->numberBetween(1, 6),
+            'capacidad' => $this->faker->numberBetween(1, 6),
 
-            'precio_noche' => fake()->randomFloat(2, 80000, 500000),
+            'precio_noche' => $this->faker->randomFloat(2, 80000, 500000),
 
-            'estado' => fake()->randomElement([
+            'estado' => $this->faker->randomElement([
                 'Disponible',
                 'Ocupada',
                 'Mantenimiento'
             ]),
 
-            'descripcion' => fake()->sentence(),
+            'descripcion' => $this->faker->sentence(),
 
             'imagen' => null,
+
         ];
     }
 }
