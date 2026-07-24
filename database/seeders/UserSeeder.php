@@ -13,60 +13,60 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // ============================
+        // ==========================
         // Administrador
-        // ============================
+        // ==========================
 
         User::updateOrCreate(
 
             [
-                'email' => 'admin@hotel.com'
+                'email' => 'administradorlaravel@gmail.com',
             ],
 
             [
                 'nombre' => 'Administrador',
                 'apellido' => 'Sistema',
-                'password' => Hash::make('12345678'),
+                'password' => Hash::make('seminariolaravel'),
                 'rol' => 'Administrador',
                 'estado' => true,
             ]
 
         );
 
-        // ============================
+        // ==========================
         // Recepcionista
-        // ============================
+        // ==========================
 
         User::updateOrCreate(
 
             [
-                'email' => 'recepcion@hotel.com'
+                'email' => 'recepcionistalaravel@gmail.com',
             ],
 
             [
                 'nombre' => 'Recepcionista',
                 'apellido' => 'Hotel',
-                'password' => Hash::make('12345678'),
+                'password' => Hash::make('seminariolaravel'),
                 'rol' => 'Recepcionista',
                 'estado' => true,
             ]
 
         );
 
-        // ============================
+        // ==========================
         // Cliente
-        // ============================
+        // ==========================
 
         User::updateOrCreate(
 
             [
-                'email' => 'juanmu@gmail.com'
+                'email' => 'clientelaravel@gmail.com',
             ],
 
             [
-                'nombre' => 'Juan',
-                'apellido' => 'Muñoz',
-                'password' => Hash::make('12345678'),
+                'nombre' => 'Cliente',
+                'apellido' => 'Prueba',
+                'password' => Hash::make('seminariolaravel'),
                 'rol' => 'Cliente',
                 'estado' => true,
             ]
